@@ -14,6 +14,7 @@ function UserControlPanel() {
     function logOutUser() {
         localStorage.removeItem( "token" );
         dispatch( setCurrentUser( null ) );
+        history.push( "/" );
     }
 
     return (
@@ -40,10 +41,10 @@ function UserControlPanel() {
                                 text="My profile"
                                 onClick={ () => history.push( "/profile" ) }
                             />
-                            <Dropdown.Item icon="heart" text='My favorites'/>
                             <Dropdown.Item icon="clone" text='My listings'/>
+                            <Dropdown.Item icon="heart" text='My favorites'/>
                             <Dropdown.Divider />
-                            <Dropdown.Item icon="setting" text='My account'/>
+                            <Dropdown.Item icon="setting" text='Account settings'/>
                             <Dropdown.Item icon="log out" text='Log out' onClick={ logOutUser }/>
                         </Dropdown.Menu>
                     </Dropdown>

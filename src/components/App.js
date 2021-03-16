@@ -1,14 +1,12 @@
 import '../App.css';
 
 import { useEffect } from 'react';
-import { Route, NavLink, Switch } from "react-router-dom";
-
+import { Route /*, NavLink, Switch */ } from "react-router-dom";
 import { useDispatch } from 'react-redux';
 import { setCurrentUser } from '../redux/currentUserSlice';
-
 import NavBar from './NavBar';
 import CategoryMenu from './CategoryMenu';
-import Profile from './Profile';
+import ProfilePage from './ProfilePage';
 
 function App() {
 
@@ -29,7 +27,7 @@ function App() {
       <section><CategoryMenu /></section>
       <section className="app-content">
         <Route exact path="/profile">
-          <Profile />
+          <ProfilePage />
         </Route>
       </section>
       {/* <div className="copyright-message">© { new Date().getFullYear() } ByTheBolt</div> */}

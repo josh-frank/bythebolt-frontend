@@ -60,7 +60,6 @@ function SignupModal( { display } ) {
                                 label="Username:"
                                 value={ signupFormState.username }
                                 onChange={ updateSignupFormState }
-                                required
                             />
                         </Form.Field>
                         <Form.Field className="email-field">
@@ -69,7 +68,6 @@ function SignupModal( { display } ) {
                                 label="Email address:"
                                 value={ signupFormState.email }
                                 onChange={ updateSignupFormState }
-                                required
                             />
                         </Form.Field>
                         <Form.Field className="password-field">
@@ -79,7 +77,6 @@ function SignupModal( { display } ) {
                                 label="Enter password:"
                                 value={ signupFormState.password }
                                 onChange={ updateSignupFormState }
-                                required
                             />
                         </Form.Field>
                         <Form.Field className="confirmation-field">
@@ -89,7 +86,6 @@ function SignupModal( { display } ) {
                                 label="Confirm password:"
                                 value={ signupFormState.confirmation }
                                 onChange={ updateSignupFormState }
-                                required
                             />
                         </Form.Field>
                     </Form>            
