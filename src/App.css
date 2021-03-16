@@ -1,0 +1,30 @@
+/* body::before {
+  content: "";
+  background-image: url( ./assets/cloth_background.jpg );
+  background-size: cover;
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  left: 0px;
+  opacity: 0.25;
+} */
+
+/******************** Nav bar ********************/
+
+.logo {
+  font-family: "Bitstream Vera Serif Bold";
+  font-size: 2rem;
+  padding: 1rem;
+}
+
+.login-form { margin: 1rem; }
+
+.categories {
+  display: flex;
+  justify-content: center;
+}
+
+/******************** User forms ********************/
+
+.user-errors { color: red; }
