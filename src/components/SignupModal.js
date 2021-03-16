@@ -1,23 +1,22 @@
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-
+import { useDispatch } from "react-redux";
 import { Button, Form, Modal } from "semantic-ui-react";
-
 import { setCurrentUser } from "../redux/currentUserSlice";
 import { setSignupModalDisplay } from "../redux/displaySignupModalSlice";
-import { setSignupFormState } from "../redux/signupFormStateSlice";
 
 function SignupModal( { display } ) {
 
-    const [ signupErrors, setSignupErrors ] = useState( [] );
+    const defaultSignupFormState = { username: "", email: "", password: "", confirmation: "" };
 
     const dispatch = useDispatch();
-    const signupFormState = useSelector( state => state.signupFormState );
+
+    const [ signupErrors, setSignupErrors ] = useState( [] );
+    const [ signupFormState, setSignupFormState ] = useState( defaultSignupFormState );
 
     function updateSignupFormState( signupFormChangeEvent ) {
         const updatedSignupFormState = { ...signupFormState };
         updatedSignupFormState[ signupFormChangeEvent.target.name ] = signupFormChangeEvent.target.value;
-        dispatch( setSignupFormState( updatedSignupFormState ) );
+        setSignupFormState( updatedSignupFormState );
     }
 
     function signUpUser( signupFormSubmitEvent ) {
@@ -29,7 +28,7 @@ function SignupModal( { display } ) {
         } ).then( response => {
             if ( response.ok ) {
                 setSignupErrors( [] );
-                dispatch( setSignupFormState( { username: "", email: "", password: "", confirmation: "" } ) );
+                setSignupFormState( defaultSignupFormState );
                 return response.json();
             } else { return response.json().then( errorData => { throw errorData } ); }
         } ).then( responseData => {
@@ -41,7 +40,7 @@ function SignupModal( { display } ) {
     }
 
     function cancelSignup() {
-        dispatch( setSignupFormState( { username: "", email: "", password: "", confirmation: "" } ) );
+        setSignupFormState( defaultSignupFormState );
         dispatch( setSignupModalDisplay( false ) );
     }
 

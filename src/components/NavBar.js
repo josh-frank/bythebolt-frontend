@@ -26,7 +26,7 @@ function NavBar() {
                         <h1 className="logo">By the Bolt</h1>
                     </Link>
                 </Menu.Item>
-                <Menu.Item style={ { width: "50vw" } }>
+                <Menu.Item style={ { width: "40vw" } }>
                     <Input
                         className="search"
                         size="big"

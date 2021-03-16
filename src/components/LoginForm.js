@@ -1,25 +1,25 @@
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Button, Form, Header } from "semantic-ui-react";
 import { setCurrentUser } from "../redux/currentUserSlice";
 import { setLoginFormDisplay } from "../redux/displayLoginFormSlice";
 import { setSignupModalDisplay } from "../redux/displaySignupModalSlice";
-import { setLoginFormState } from "../redux/loginFormStateSlice";
 // import { useHistory } from "react-router-dom";
 
 function LoginForm() {
 
+    const defaultLoginFormState = { username: "", password: "", confirmation: "" };
+    
     // const history = useHistory();
-
-    const [ loginErrors, setLoginErrors ] = useState( [] );
-
     const dispatch = useDispatch();
-    const loginFormState = useSelector( state => state.loginFormState );
+    
+    const [ loginErrors, setLoginErrors ] = useState( [] );
+    const [ loginFormState, setLoginFormState ] = useState( defaultLoginFormState );
 
     function updateLoginFormState( loginFormChangeEvent ) {
         const updatedLoginFormState = { ...loginFormState };
         updatedLoginFormState[ loginFormChangeEvent.target.name ] = loginFormChangeEvent.target.value;
-        dispatch( setLoginFormState( updatedLoginFormState ) );
+        setLoginFormState( updatedLoginFormState );
     }
 
     function logInUser() {
@@ -30,7 +30,7 @@ function LoginForm() {
         } ).then( response => {
             if ( response.ok ) {
                 setLoginErrors( [] );
-                dispatch( setLoginFormState( { username: "", password: "", confirmation: "" } ) );
+                setLoginFormState( defaultLoginFormState );
                 return response.json();
             } else { return response.json().then( errorData => { throw errorData } ); }
         } ).then( responseData => {
