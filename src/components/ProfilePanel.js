@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Button, Container, Divider, Icon, Label, Segment } from "semantic-ui-react";
+// import { setCurrentUser } from "../redux/currentUserSlice";
 import LocationModal from "./LocationModal";
 import UpdateBioForm from "./UpdateBioForm";
 import UpdateEmailForm from "./UpdateEmailForm";
@@ -12,6 +13,8 @@ function getAddress( lat, lng ) {
 
 function ProfilePanel() {
 
+    // const dispatch = useDispatch();
+
     const currentUser = useSelector( state => state.currentUser );
 
     const defaultEditPanelsState = { email: false, bio: false, location: false };
@@ -20,8 +23,10 @@ function ProfilePanel() {
     const [ address, setAddress ] = useState( null );
 
     useEffect( () => {
-        getAddress( currentUser.location[ 0 ], currentUser.location[ 1 ] )
-            .then( addressData => setAddress( addressData.data[ 0 ].label ) );
+        if ( !!currentUser.location && !!currentUser.location.length ) {
+            getAddress( currentUser.location[ 0 ], currentUser.location[ 1 ] )
+                .then( addressData => setAddress( addressData.data[ 0 ].label ) );
+        }
     }, [ currentUser ] );
 
     function setOpenEditPanelsState( panelName ) {
@@ -29,6 +34,22 @@ function ProfilePanel() {
         updatedEditPanelsState[ panelName ] = !updatedEditPanelsState[ panelName ];
         toggleOpenEditPanelsState( updatedEditPanelsState );
     }
+
+    // function useCurrentLocation() {
+    //     let currentLocation = null;
+    //     navigator.geolocation.getCurrentPosition( position => {
+    //         currentLocation = [ position.coords.latitude, position.coords.longitude ]
+    //     } );
+        // console.log('currentLocation: ', currentLocation);
+        // const token = localStorage.getItem( "token" );
+        // fetch( `${process.env.REACT_APP_API_URL}/profile`, {
+        //     method: "PATCH",
+        //     headers: { "Content-Type": "application/json", "Authorization": `Bearer ${ token }` },
+        //     body: JSON.stringify( { location: [ currentLocation[ 0 ], currentLocation[ 1 ] ] } )
+        // } )
+        //     .then( response => response.json() )
+        //     .then( userData => dispatch( setCurrentUser( userData ) ) );
+    // }
 
     return (
         <>
@@ -63,8 +84,8 @@ function ProfilePanel() {
                 { !address ? <em>No location set!</em> : address }
                 <Button.Group size="small" floated="right">
                     <Button onClick={ () => setOpenEditPanelsState( "location" ) }>Set location</Button>
-                    <Button.Or />
-                    <Button>Use current location</Button>
+                    {/* <Button.Or />
+                    <Button onClick={ useCurrentLocation }>Use current location</Button> */}
                 </Button.Group>
             </Container>
         </>
