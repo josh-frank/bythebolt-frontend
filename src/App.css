@@ -28,3 +28,13 @@
 /******************** User forms ********************/
 
 .user-errors { color: red; }
+
+/******************** User forms ********************/
+
+#mapid {
+  margin-left: auto;
+  margin-right: auto;
+  height: 300px;
+  width: 225px;
+}
+

@@ -45,7 +45,7 @@ function SignupModal( { display } ) {
     }
 
     return (
-        <Modal open={ display }>
+        <Modal dimmer="inverted" open={ display }>
             <Modal.Header>Sign up</Modal.Header>
                 <Modal.Content>
                     { signupErrors &&
