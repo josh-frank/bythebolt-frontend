@@ -1,12 +1,12 @@
 import '../App.css';
-
 import { useEffect } from 'react';
 import { Route /*, NavLink, Switch */ } from "react-router-dom";
-import { useDispatch } from 'react-redux';
-import { setCurrentUser } from '../redux/currentUserSlice';
 import NavBar from './NavBar';
 import CategoryMenu from './CategoryMenu';
 import ProfilePage from './ProfilePage';
+import { useDispatch } from 'react-redux';
+import { setCurrentUser } from '../redux/currentUserSlice';
+import { setAllCategories } from '../redux/allCategoriesSlice';
 
 function App() {
 
@@ -19,6 +19,8 @@ function App() {
         headers: { Authorization: `Bearer ${ token }` }
       } ).then( response => response.json() ).then( userData => dispatch( setCurrentUser( userData ) ) );
     }
+    fetch( `${ process.env.REACT_APP_API_URL }/categories` ).then( response => response.json() )
+        .then( userData => dispatch( setAllCategories( userData ) ) );
   }, [ dispatch ] );
 
   return (

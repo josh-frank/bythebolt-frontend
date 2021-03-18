@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
-import { Button, Container, Divider, Grid, Header, Image, Menu, Segment } from "semantic-ui-react";
+import { Button, Container, Divider, Grid, Header, Image, Label, Menu, Segment } from "semantic-ui-react";
 import ProfilePanel from "./ProfilePanel";
 import UploadAvatarModal from "./UploadAvatarModal";
 // import {Image, Video, Transformation, CloudinaryContext} from 'cloudinary-react';
@@ -12,6 +12,10 @@ function ProfilePage() {
     const [ activeMenuItem, setActiveMenuItem ] = useState( "profile" );
     const [ displayAvatarForm, toggleDisplayAvatarForm ] = useState( false );
 
+    const categoryTags = currentUser.categories.map( category => {
+        return <Label key={ category.id } tag>{ category.name }</Label>
+    } );
+
     return (
         <>
             <UploadAvatarModal
@@ -19,24 +23,27 @@ function ProfilePage() {
                 toggleDisplay={ toggleDisplayAvatarForm }
             />
             <Container style={ { marginTop: "10px" } }>
-                <Segment>
-                    <Header>
-                        { currentUser.avatar_url && <Image
-                            className="avatar"
-                            src={ currentUser.avatar_url }
-                            alt={ currentUser.username }
-                            avatar
-                        /> }
-                        <Button
-                            floated="right"
-                            onClick={ () => toggleDisplayAvatarForm( !displayAvatarForm ) }
-                        >
-                            Update avatar
-                        </Button>
-                        { currentUser.username }
-                    </Header>
-                    Member since { new Date( currentUser.created_at ).toLocaleDateString() }
-                </Segment>
+                <Segment.Group>
+                    <Segment>
+                        <Header>
+                            { currentUser.avatar_url && <Image
+                                className="avatar"
+                                src={ currentUser.avatar_url }
+                                alt={ currentUser.username }
+                                avatar
+                            /> }
+                            <Button
+                                floated="right"
+                                onClick={ () => toggleDisplayAvatarForm( !displayAvatarForm ) }
+                            >
+                                Update avatar
+                            </Button>
+                            { currentUser.username }
+                        </Header>
+                        Member since { new Date( currentUser.created_at ).toLocaleDateString() }
+                    </Segment>
+                    <Segment secondary>{ categoryTags }</Segment>
+                </Segment.Group>
                 <Grid>
                     <Grid.Column width={4}>
                         <Menu fluid vertical tabular>
