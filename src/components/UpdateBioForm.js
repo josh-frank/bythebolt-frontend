@@ -9,7 +9,7 @@ function UpdateBioForm( { toggleDisplay } ) {
 
     const currentUser = useSelector( state => state.currentUser );
 
-    const [ newBio, setNewBio ] = useState( currentUser.bio );
+    const [ newBio, setNewBio ] = useState( currentUser.bio ? currentUser.bio : "" );
 
     function updateBio() {
         const token = localStorage.getItem( "token" );
