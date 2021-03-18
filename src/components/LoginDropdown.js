@@ -1,8 +1,7 @@
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Button, Dropdown, Form } from "semantic-ui-react";
 import { setCurrentUser } from "../redux/currentUserSlice";
-import { setLoginFormDisplay } from "../redux/displayLoginFormSlice";
 import { setSignupModalDisplay } from "../redux/displaySignupModalSlice";
 // import { useHistory } from "react-router-dom";
 
@@ -12,8 +11,8 @@ function LoginDropdown() {
     
     // const history = useHistory();
     const dispatch = useDispatch();
-    const displayLoginForm = useSelector( state => state.displayLoginForm );
     
+    const [ displayLoginForm, setLoginFormDisplay ] = useState( false );
     const [ loginErrors, setLoginErrors ] = useState( [] );
     const [ loginFormState, setLoginFormState ] = useState( defaultLoginFormState );
 
@@ -37,7 +36,7 @@ function LoginDropdown() {
         } ).then( responseData => {
                 dispatch( setCurrentUser( responseData.user ) );
                 localStorage.setItem( "token", responseData.token );
-                dispatch( setLoginFormDisplay( false ) );
+                setLoginFormDisplay( false );
                 // history.push( "/" );
             } ).catch( errorData => setLoginErrors( errorData.errors ) );
     }
@@ -51,7 +50,7 @@ function LoginDropdown() {
                 className="icon"
                 direction="left"
                 open={ displayLoginForm }
-                onClick={ () => dispatch( setLoginFormDisplay( !displayLoginForm ) ) }
+                onClick={ () => setLoginFormDisplay( !displayLoginForm ) }
             >
                 <Dropdown.Menu onClick={ loginMenuClick => loginMenuClick.stopPropagation() }>
                     { loginErrors &&
