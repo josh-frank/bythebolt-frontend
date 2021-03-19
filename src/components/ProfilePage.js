@@ -10,17 +10,13 @@ function ProfilePage() {
     const currentUser = useSelector( state => state.currentUser );
 
     const [ activeMenuItem, setActiveMenuItem ] = useState( "profile" );
-    const [ displayAvatarForm, toggleDisplayAvatarForm ] = useState( false );
-
-    const categoryTags = currentUser.categories.map( category => {
-        return <Label key={ category.id } tag>{ category.name }</Label>
-    } );
+    const [ displayAvatarModal, toggleDisplayAvatarModal ] = useState( false );
 
     return (
         <>
             <UploadAvatarModal
-                display={ displayAvatarForm }
-                toggleDisplay={ toggleDisplayAvatarForm }
+                display={ displayAvatarModal }
+                toggleDisplay={ toggleDisplayAvatarModal }
             />
             <Container style={ { marginTop: "10px" } }>
                 <Segment.Group>
@@ -34,7 +30,7 @@ function ProfilePage() {
                             /> }
                             <Button
                                 floated="right"
-                                onClick={ () => toggleDisplayAvatarForm( !displayAvatarForm ) }
+                                onClick={ () => toggleDisplayAvatarModal( !displayAvatarModal ) }
                             >
                                 Update avatar
                             </Button>
@@ -42,7 +38,12 @@ function ProfilePage() {
                         </Header>
                         Member since { new Date( currentUser.created_at ).toLocaleDateString() }
                     </Segment>
-                    <Segment secondary>{ categoryTags }</Segment>
+                    <Segment secondary>
+                    { !!currentUser.categories.length ?
+                        currentUser.categories.map( category => <Label key={ category.id } tag>{ category.name }</Label> ) :
+                        <em>No categories yet!</em>
+                    }
+                    </Segment>
                 </Segment.Group>
                 <Grid>
                     <Grid.Column width={4}>
