@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
-import { Button, Container, Divider, Grid, Header, Image, Label, Menu, Segment } from "semantic-ui-react";
+import { Button, Container, Divider, Grid, Header, Image, Menu, Segment } from "semantic-ui-react";
+import AddUserCategoryDropdown from "./AddUserCategoryDropdown";
 import ProfilePanel from "./ProfilePanel";
 import UploadAvatarModal from "./UploadAvatarModal";
+import UserCategoryTags from "./UserCategoryTags";
 // import {Image, Video, Transformation, CloudinaryContext} from 'cloudinary-react';
 
 function ProfilePage() {
@@ -39,10 +41,9 @@ function ProfilePage() {
                         Member since { new Date( currentUser.created_at ).toLocaleDateString() }
                     </Segment>
                     <Segment secondary>
-                    { !!currentUser.categories.length ?
-                        currentUser.categories.map( category => <Label key={ category.id } tag>{ category.name }</Label> ) :
-                        <em>No categories yet!</em>
-                    }
+                        { !!currentUser.user_categories.length ? <UserCategoryTags /> : <em>No categories yet!</em> }
+                        &nbsp;
+                        <AddUserCategoryDropdown />
                     </Segment>
                 </Segment.Group>
                 <Grid>
