@@ -37,8 +37,17 @@ function App() {
         <Route exact path="/">
           { useSelector( state => state.allListings ) && <ListingsPage /> }
         </Route>
-        <Route exact path="/profile">
-          <ProfilePage />
+        <Route exact path="/my_profile">
+          <ProfilePage activeItem="profile" />
+        </Route>
+        <Route exact path="/my_listings">
+          <ProfilePage activeItem="listings" />
+        </Route>
+        <Route exact path="/my_favorites">
+          <ProfilePage activeItem="favorites" />
+        </Route>
+        <Route exact path="/settings">
+          <ProfilePage activeItem="settings" />
         </Route>
         <Route exact path="/new_listing">
           <CreateListingPage />

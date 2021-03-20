@@ -1,5 +1,6 @@
 // import { useSelector } from "react-redux";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { Button, Container, Divider, Dropdown, Form, Header, Input, Label, Segment, TextArea } from "semantic-ui-react";
 
@@ -8,11 +9,19 @@ function CreateListingPage() {
     const history = useHistory();
     if ( !localStorage.getItem( "token" ) ) history.push( "/" );
 
-    // const currentUser = useSelector( state => state.currentUser );
-
     const [ newListingFormState, setNewListingFormState ] = useState( {} );
-    console.log('newListingFormState: ', newListingFormState);
+    console.log("newListingFormState: ", newListingFormState);
 
+    // const currentUser = useSelector( state => state.currentUser );
+    const allCategories = useSelector( state => state.allCategories );
+
+    const categoryDropdownOptions = !allCategories ? null : allCategories.map( category => {
+        const disabled = !!newListingFormState.categories ?
+            newListingFormState.categories.includes( category.id ) :
+            false;
+        return { key: category.id, text: category.name, value: category.id, disabled: disabled };
+    } );
+    
     function updateNewListingForm( newListingFormChangeEvent ) {
         const updatedListingFormState = { ...newListingFormState };
         updatedListingFormState[ newListingFormChangeEvent.target.name ] = newListingFormChangeEvent.target.value;
@@ -21,25 +30,29 @@ function CreateListingPage() {
     
     function updateNewListingFormUnit( unit ) {
         const updatedListingFormState = { ...newListingFormState };
-        updatedListingFormState.unit = unit;
+        updatedListingFormState.unit = unit ? unit : null;
+        setNewListingFormState( updatedListingFormState );
+    }
+    
+    function updateNewListingFormTags( categoryIdsArray ) {
+        const updatedListingFormState = { ...newListingFormState };
+        updatedListingFormState.tags = categoryIdsArray ? categoryIdsArray : null;
         setNewListingFormState( updatedListingFormState );
     }
 
     return (
         <Container style={ { marginTop: "10px" } }>
             <Header size="huge">Create new listing</Header>
-            <Segment.Group>
-                <Segment>
-                    <Label>Listing title</Label>
-                    <Input
-                        fluid
-                        size="massive"
-                        name="title"
-                        placeholder="Listing title"
-                        onChange={ updateNewListingForm }
-                    />
-                </Segment>
-            </Segment.Group>
+            <Segment>
+                <Label>Listing title</Label>
+                <Input
+                    fluid
+                    size="massive"
+                    name="title"
+                    placeholder="Listing title"
+                    onChange={ updateNewListingForm }
+                />
+            </Segment>
             <Segment.Group horizontal>
                 <Segment>
                     <Form>
@@ -66,7 +79,7 @@ function CreateListingPage() {
                         <Dropdown
                             selection
                             name="unit"
-                            placeholder='Unit (leave blank if none)'
+                            placeholder="Unit (leave blank if none)"
                             clearable={ true }
                             options={ [
                                 { key: 1, text: "Each", value: "each" },
@@ -96,6 +109,17 @@ function CreateListingPage() {
                     <Divider />
                 </Segment>
             </Segment.Group>
+            <Segment>
+                <Dropdown
+                    fluid
+                    multiple
+                    selection
+                    clearable
+                    placeholder="Add tags"
+                    options={ categoryDropdownOptions }
+                    onChange={ ( changeEvent, { value } ) => updateNewListingFormTags( value ) }
+                />
+            </Segment>
             <Segment secondary>
                 <Button primary>Create listing</Button>
             </Segment>
@@ -108,24 +132,24 @@ export default CreateListingPage;
 
 // <Dropdown
 //     name="unit"
-//     placeholder='Unit'
+//     placeholder="Unit"
 //     clearable={ true }
 //     onChange={ updateNewListingForm }
 // >
 //     <Dropdown.Menu>
-//         <Dropdown.Header content='Unit' />
+//         <Dropdown.Header content="Unit" />
 //         <Dropdown.Item>each</Dropdown.Item>
 //         <Dropdown.Item>spool</Dropdown.Item>
 //         <Dropdown.Item>roll</Dropdown.Item>
 //         <Dropdown.Item>bolt</Dropdown.Item>
 //         <Dropdown.Divider />
-//         <Dropdown.Header content='Length' />
+//         <Dropdown.Header content="Length" />
 //         <Dropdown.Item>inch</Dropdown.Item>
 //         <Dropdown.Item>yard</Dropdown.Item>
 //         <Dropdown.Item>centimeter</Dropdown.Item>
 //         <Dropdown.Item>meter</Dropdown.Item>
 //         <Dropdown.Divider />
-//         <Dropdown.Header content='Weight' />
+//         <Dropdown.Header content="Weight" />
 //         <Dropdown.Item>pound</Dropdown.Item>
 //         <Dropdown.Item>ounce</Dropdown.Item>
 //         <Dropdown.Item>gram</Dropdown.Item>

@@ -9,14 +9,14 @@ import UploadAvatarModal from "./UploadAvatarModal";
 import UserCategoryTags from "./UserCategoryTags";
 // import {Image, Video, Transformation, CloudinaryContext} from 'cloudinary-react';
 
-function ProfilePage() {
+function ProfilePage( { activeItem } ) {
 
     const history = useHistory();
     if ( !localStorage.getItem( "token" ) ) history.push( "/" );
 
     const currentUser = useSelector( state => state.currentUser );
 
-    const [ activeMenuItem, setActiveMenuItem ] = useState( "profile" );
+    const [ activeMenuItem, setActiveMenuItem ] = useState( activeItem );
     const [ displayAvatarModal, toggleDisplayAvatarModal ] = useState( false );
 
     return ( !currentUser ? null :

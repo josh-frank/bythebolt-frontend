@@ -8,7 +8,9 @@ import { Button, Dropdown, Icon, Menu } from "semantic-ui-react";
 function UserControlPanel() {
 
     const history = useHistory();
+
     const dispatch = useDispatch();
+    
     const currentUser = useSelector( state => state.currentUser );
 
     function logOutUser() {
@@ -45,13 +47,29 @@ function UserControlPanel() {
                             <Dropdown.Item
                                 icon="address card"
                                 text="My profile"
-                                onClick={ () => history.push( "/profile" ) }
+                                onClick={ () => history.push( "/my_profile" ) }
+                                />
+                            <Dropdown.Item
+                                icon="clone"
+                                text='My listings'
+                                onClick={ () => history.push( "/my_listings" ) }
                             />
-                            <Dropdown.Item icon="clone" text='My listings'/>
-                            <Dropdown.Item icon="heart" text='My favorites'/>
+                            <Dropdown.Item
+                                icon="heart"
+                                text='My favorites'
+                                onClick={ () => history.push( "/my_favorites" ) }
+                            />
                             <Dropdown.Divider />
-                            <Dropdown.Item icon="setting" text='Account settings'/>
-                            <Dropdown.Item icon="log out" text='Log out' onClick={ logOutUser }/>
+                            <Dropdown.Item
+                                icon="setting"
+                                text='Account settings'
+                                onClick={ () => history.push( "/settings" ) }
+                            />
+                            <Dropdown.Item
+                                icon="log out"
+                                text='Log out'
+                                onClick={ logOutUser }
+                            />
                         </Dropdown.Menu>
                     </Dropdown>
                 </Button.Group>

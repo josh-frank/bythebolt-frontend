@@ -11,8 +11,10 @@ function AddUserCategoryDropdown() {
 
     const allCategories = useSelector( state => state.allCategories );
     
-    const categoryDropdownOptions = allCategories.map( category => {
-        const disabled = !!currentUser.user_categories ? currentUser.user_categories.map( userCategory => userCategory.category.id ).includes( category.id ) : false;
+    const categoryDropdownOptions = !allCategories ? null : allCategories.map( category => {
+        const disabled = !!currentUser.user_categories ?
+            currentUser.user_categories.map( userCategory => userCategory.category.id ).includes( category.id ) :
+            false;
         return { key: category.id, text: category.name, value: category.id, disabled: disabled };
     } );
 
