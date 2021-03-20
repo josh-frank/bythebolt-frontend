@@ -10,6 +10,7 @@ import CategoryMenu from './CategoryMenu';
 import ProfilePage from './ProfilePage';
 import ListingsPage from './ListingsPage';
 import Footer from './Footer';
+import CreateListingPage from './CreateListingPage';
 
 function App() {
 
@@ -38,6 +39,9 @@ function App() {
         </Route>
         <Route exact path="/profile">
           <ProfilePage />
+        </Route>
+        <Route exact path="/new_listing">
+          <CreateListingPage />
         </Route>
       </section>
       <section><Footer /></section>

@@ -20,7 +20,13 @@ function UserControlPanel() {
     return (
         <>
             <Menu.Item>
-                <Button icon labelPosition="left" color="blue">
+                <Button
+                    icon
+                    labelPosition="left"
+                    color="blue"
+                    as="a"
+                    onClick={ () => history.push( "/new_listing" ) }
+                >
                     <Icon name="camera" />
                     Create listing
                 </Button>

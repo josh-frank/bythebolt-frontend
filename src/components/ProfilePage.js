@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
 import { Button, Container, Divider, Grid, Header, Image, Menu, Segment } from "semantic-ui-react";
 import AddUserCategoryDropdown from "./AddUserCategoryDropdown";
+import MyListingsPanel from "./MyListingsPanel";
 import ProfilePanel from "./ProfilePanel";
 import UploadAvatarModal from "./UploadAvatarModal";
 import UserCategoryTags from "./UserCategoryTags";
@@ -9,12 +11,15 @@ import UserCategoryTags from "./UserCategoryTags";
 
 function ProfilePage() {
 
+    const history = useHistory();
+    if ( !localStorage.getItem( "token" ) ) history.push( "/" );
+
     const currentUser = useSelector( state => state.currentUser );
 
     const [ activeMenuItem, setActiveMenuItem ] = useState( "profile" );
     const [ displayAvatarModal, toggleDisplayAvatarModal ] = useState( false );
 
-    return (
+    return ( !currentUser ? null :
         <>
             <UploadAvatarModal
                 display={ displayAvatarModal }
@@ -50,26 +55,26 @@ function ProfilePage() {
                     <Grid.Column width={4}>
                         <Menu fluid vertical tabular>
                             <Menu.Item
-                                name="profile"
+                                name="My profile"
                                 icon="user"
                                 active={ activeMenuItem === "profile" }
                                 onClick={ () => setActiveMenuItem( "profile" ) }
                                 />
                             <Menu.Item
-                                name="listings"
+                                name="My listings"
                                 icon="list"
                                 active={ activeMenuItem === "listings" }
                                 onClick={ () => setActiveMenuItem( "listings" ) }
                                 />
                             <Menu.Item
-                                name="favorites"
+                                name="My favorites"
                                 icon="heart"
                                 active={ activeMenuItem === "favorites" }
                                 onClick={ () => setActiveMenuItem( "favorites" ) }
                                 />
                             <Divider />
                             <Menu.Item
-                                name="settings"
+                                name="Settings"
                                 icon="settings"
                                 active={ activeMenuItem === "settings" }
                                 onClick={ () => setActiveMenuItem( "settings" ) }
@@ -79,7 +84,7 @@ function ProfilePage() {
                     <Grid.Column stretched width={12}>
                         <Segment>
                             { activeMenuItem === "profile" && <ProfilePanel /> }
-                            { activeMenuItem === "listings" && <div>Listings</div> }
+                            { activeMenuItem === "listings" && <MyListingsPanel /> }
                             { activeMenuItem === "favorites" && <div>Favorites</div> }
                             { activeMenuItem === "settings" && <div>Settings</div> }
                         </Segment>

@@ -14,6 +14,10 @@ function ListingCard( { listing } ) {
         </Label>
     );
 
+    const listingCategoryTags = listing.listing_categories.map( listingCategory => {
+        return <Label tag size="mini" key={ listingCategory.id }>{ listingCategory.category.name }</Label>
+    } );
+
     return (
         <Card>
             <Image
@@ -34,6 +38,9 @@ function ListingCard( { listing } ) {
                             { distanceBetween( listing.user.location, currentUser.location ).toFixed( 1 ) } mi. away
                         </Segment> }
                     </Segment.Group>
+                </Card.Meta>
+                <Card.Meta>
+                    { listingCategoryTags }
                 </Card.Meta>
                 <Card.Description>
                     { listing.description.split( " " ).slice( 0, 10 ).join( " " ) + "…" }

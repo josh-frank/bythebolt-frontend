@@ -9,7 +9,7 @@ function ListingsPage() {
     const cardList = allListings.map( listing => <ListingCard key={ listing.id } listing={ listing } /> );
 
     return (
-        <Container style={ { marginTop: "5px" } }>
+        <Container style={ { marginTop: "10px" } }>
             <Card.Group>
                 { cardList }
             </Card.Group>

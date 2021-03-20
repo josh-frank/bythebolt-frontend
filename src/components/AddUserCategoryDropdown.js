@@ -8,8 +8,11 @@ function AddUserCategoryDropdown() {
     const dispatch = useDispatch();
 
     const currentUser = useSelector( state => state.currentUser );
-    const categoryDropdownOptions = useSelector( state => state.allCategories ).map( category => {
-        const disabled = !!currentUser.categories ? currentUser.categories.map( category => category.name ).includes( category.name ) : false;
+
+    const allCategories = useSelector( state => state.allCategories );
+    
+    const categoryDropdownOptions = allCategories.map( category => {
+        const disabled = !!currentUser.user_categories ? currentUser.user_categories.map( userCategory => userCategory.category.id ).includes( category.id ) : false;
         return { key: category.id, text: category.name, value: category.id, disabled: disabled };
     } );
 
@@ -34,6 +37,7 @@ function AddUserCategoryDropdown() {
                 selection
                 placeholder='Add tags'
                 options={ categoryDropdownOptions }
+                clearable={ true }
                 onChange={ ( changeEvent, { value } ) => setSelectedCategory( value ) }
             />
             <Button
