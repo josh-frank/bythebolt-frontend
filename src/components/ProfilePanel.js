@@ -35,22 +35,6 @@ function ProfilePanel() {
         toggleOpenEditPanelsState( updatedEditPanelsState );
     }
 
-    // function useCurrentLocation() {
-    //     let currentLocation = null;
-    //     navigator.geolocation.getCurrentPosition( position => {
-    //         currentLocation = [ position.coords.latitude, position.coords.longitude ]
-    //     } );
-        // console.log('currentLocation: ', currentLocation);
-        // const token = localStorage.getItem( "token" );
-        // fetch( `${process.env.REACT_APP_API_URL}/profile`, {
-        //     method: "PATCH",
-        //     headers: { "Content-Type": "application/json", "Authorization": `Bearer ${ token }` },
-        //     body: JSON.stringify( { location: [ currentLocation[ 0 ], currentLocation[ 1 ] ] } )
-        // } )
-        //     .then( response => response.json() )
-        //     .then( userData => dispatch( setCurrentUser( userData ) ) );
-    // }
-
     return (
         <>
             <LocationModal

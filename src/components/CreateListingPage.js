@@ -2,7 +2,8 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { Button, Container, Divider, Dropdown, Form, Header, Input, Label, Segment, TextArea } from "semantic-ui-react";
+import { Button, Container, Divider, Dropdown, Form, Grid, Header, Image, Input, Label, Popup, Segment, TextArea } from "semantic-ui-react";
+import Dropzone from 'react-dropzone'
 
 function CreateListingPage() {
 
@@ -10,16 +11,12 @@ function CreateListingPage() {
     if ( !localStorage.getItem( "token" ) ) history.push( "/" );
 
     const [ newListingFormState, setNewListingFormState ] = useState( {} );
-    console.log("newListingFormState: ", newListingFormState);
 
     // const currentUser = useSelector( state => state.currentUser );
     const allCategories = useSelector( state => state.allCategories );
 
     const categoryDropdownOptions = !allCategories ? null : allCategories.map( category => {
-        const disabled = !!newListingFormState.categories ?
-            newListingFormState.categories.includes( category.id ) :
-            false;
-        return { key: category.id, text: category.name, value: category.id, disabled: disabled };
+        return { key: category.id, text: category.name, value: category.id };
     } );
     
     function updateNewListingForm( newListingFormChangeEvent ) {
@@ -39,6 +36,40 @@ function CreateListingPage() {
         updatedListingFormState.tags = categoryIdsArray ? categoryIdsArray : null;
         setNewListingFormState( updatedListingFormState );
     }
+    
+    function updateNewListingFormImages( images ) {
+        const updatedListingFormState = { ...newListingFormState };
+        updatedListingFormState.images = !images ? null :
+            newListingFormState.images ? newListingFormState.images.concat( images ) : images;
+        setNewListingFormState( updatedListingFormState );
+    }
+    
+    function removeNewListingFormImage( image ) {
+        const updatedListingFormState = { ...newListingFormState };
+        updatedListingFormState.images = newListingFormState.images.length === 1 ? null :
+            newListingFormState.images.filter( newImage => newImage.name !== image.name );
+        setNewListingFormState( updatedListingFormState );
+    }
+
+    const newListingImagePreviews = !newListingFormState.images ? null :
+        newListingFormState.images.map( ( image, index ) => {
+            return <Popup
+                key={ index }
+                inverted
+                size="mini"
+                position="bottom center"
+                content="Click to delete"
+                trigger={
+                    <Image
+                        size="small"
+                        src={ URL.createObjectURL( image ) }
+                        alt={ image.name }
+                        onClick={ () => removeNewListingFormImage( image ) }
+                    />
+                }
+            />
+        }
+    );
 
     return (
         <Container style={ { marginTop: "10px" } }>
@@ -107,6 +138,27 @@ function CreateListingPage() {
                         />
                     </Form.Group>
                     <Divider />
+                    <Grid>
+                        { newListingImagePreviews }
+                    </Grid>
+                    <Dropzone onDrop={ acceptedFiles => updateNewListingFormImages( acceptedFiles ) }>
+                        { ( { getRootProps, getInputProps } ) => (
+                            <Segment>
+                                <div { ...getRootProps() }>
+                                    <Header textAlign="center">
+                                        Drag and drop listing image/s here
+                                    </Header>
+                                    <input { ...getInputProps() } />
+                                    <Header size="small" textAlign="center">
+                                        Or click to select listing images from file browser
+                                    </Header>
+                                </div>
+                            </Segment>
+                        )}
+                    </Dropzone>
+                    <Button onClick={ () => updateNewListingFormImages( null ) }>
+                        Clear images
+                    </Button>
                 </Segment>
             </Segment.Group>
             <Segment>
