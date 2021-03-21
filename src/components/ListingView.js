@@ -1,3 +1,5 @@
+import 'pure-react-carousel/dist/react-carousel.es.css';
+import { ButtonBack, ButtonNext, CarouselProvider, Image as CarouselImage, Slider, Slide } from 'pure-react-carousel';
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router";
@@ -21,7 +23,6 @@ function ListingView() {
                 history.push( "/" );
             } ).then( setThisListing );
     }, [ listingId, history ] );
-    console.log('thisListing: ', thisListing);
 
     const sellerCard = ( thisListing &&
         <Card>
@@ -44,6 +45,24 @@ function ListingView() {
         </Card>
     );
 
+    const listingImageCarousel = ( thisListing &&
+        <CarouselProvider
+            naturalSlideWidth={6}
+            naturalSlideHeight={4}
+            totalSlides={ thisListing.image_urls.length }
+        >
+            <Slider>
+                { thisListing.image_urls.map( ( imageUrl, index ) => {
+                    return <Slide key={ index } index={ index }>
+                        <Image as={ CarouselImage } src={ imageUrl } isBgImage={ true }/>
+                    </Slide>
+                } ) }
+            </Slider>
+            <ButtonBack>Back</ButtonBack>
+            <ButtonNext>Next</ButtonNext>
+        </CarouselProvider>
+    );
+
     return ( thisListing &&
         <Container style={ { marginTop: "10px" } }>
             <Segment.Group>
@@ -57,14 +76,10 @@ function ListingView() {
                 </Segment>
             </Segment.Group>
             <Segment.Group horizontal>
-                <Segment>
-                    <Image
-                        fluid
-                        size="huge"
-                        src={ thisListing.image_urls[ 0 ] }
-                    />
+                <Segment loading={ !thisListing }>
+                    { listingImageCarousel }
                 </Segment>
-                <Segment compact>
+                <Segment style={ { maxWidth: "25vw" } }>
                     { sellerCard }
                 </Segment>
             </Segment.Group>
