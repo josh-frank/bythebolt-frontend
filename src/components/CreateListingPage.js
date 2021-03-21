@@ -1,19 +1,23 @@
 // import { useSelector } from "react-redux";
 import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { Button, Container, Divider, Dropdown, Form, Grid, Header, Image, Input, Label, Popup, Segment, TextArea } from "semantic-ui-react";
 import Dropzone from 'react-dropzone'
+import { setAllListings } from "../redux/allListingsSlice";
 
 function CreateListingPage() {
 
     const history = useHistory();
     if ( !localStorage.getItem( "token" ) ) history.push( "/" );
 
+    const dispatch = useDispatch();
+
     const [ newListingFormState, setNewListingFormState ] = useState( {} );
 
-    // const currentUser = useSelector( state => state.currentUser );
+    const currentUser = useSelector( state => state.currentUser );
     const allCategories = useSelector( state => state.allCategories );
+    const allListings = useSelector( state => state.allListings );
 
     const categoryDropdownOptions = !allCategories ? null : allCategories.map( category => {
         return { key: category.id, text: category.name, value: category.id };
@@ -49,6 +53,23 @@ function CreateListingPage() {
         updatedListingFormState.images = newListingFormState.images.length === 1 ? null :
             newListingFormState.images.filter( newImage => newImage.name !== image.name );
         setNewListingFormState( updatedListingFormState );
+    }
+
+    function createListing() {
+        const formData = new FormData();
+        formData.append( "user_id", currentUser.id );
+        formData.append( "title", newListingFormState.title );
+        formData.append( "description", newListingFormState.description );
+        formData.append( "price", newListingFormState.price );
+        formData.append( "quantity", newListingFormState.quantity );
+        formData.append( "unit", newListingFormState.unit );
+        newListingFormState.images.forEach( image => formData.append( "images[]", image ) );
+        fetch( `${ process.env.REACT_APP_API_URL }/listings`, {
+            method: "POST",
+            body: formData
+        } ).then( response => response.json() ).then( newListingData => {
+            dispatch( setAllListings( { ...allListings, newListingData } ) );
+        } );
     }
 
     const newListingImagePreviews = !newListingFormState.images ? null :
@@ -138,7 +159,7 @@ function CreateListingPage() {
                         />
                     </Form.Group>
                     <Divider />
-                    <Grid>
+                    <Grid columns="5">
                         { newListingImagePreviews }
                     </Grid>
                     <Dropzone onDrop={ acceptedFiles => updateNewListingFormImages( acceptedFiles ) }>
@@ -173,7 +194,9 @@ function CreateListingPage() {
                 />
             </Segment>
             <Segment secondary>
-                <Button primary>Create listing</Button>
+                <Button primary onClick={ createListing }>
+                    Create listing
+                </Button>
             </Segment>
         </Container>
     );
