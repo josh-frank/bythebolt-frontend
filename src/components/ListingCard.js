@@ -1,8 +1,11 @@
 import { useSelector } from "react-redux";
+import { useHistory } from "react-router";
 import { Card, Icon, Image, Label, Segment } from "semantic-ui-react";
 import { distanceBetween } from "../utilities/distanceBetween";
 
 function ListingCard( { listing } ) {
+
+    const history = useHistory();
 
     const currentUser = useSelector( state => state.currentUser );
 
@@ -22,11 +25,13 @@ function ListingCard( { listing } ) {
         <Card>
             <Image
                 fluid
-                src='https://react.semantic-ui.com/images/wireframe/image.png'
+                src={ listing.image_urls[ 0 ] }
                 label={ !daysSinceCreated ? newLabel : null }
             />
             <Card.Content>
-                <Card.Header>{ listing.title }</Card.Header>
+                <Card.Header as="a" onClick={ () => history.push( `listing/${ listing.id }` ) }>
+                    { listing.title }
+                </Card.Header>
                 <Card.Meta>
                     <Segment.Group horizontal>
                         <Segment>

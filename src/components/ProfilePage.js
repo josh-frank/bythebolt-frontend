@@ -19,7 +19,7 @@ function ProfilePage( { activeItem } ) {
     const [ activeMenuItem, setActiveMenuItem ] = useState( activeItem );
     const [ displayAvatarModal, toggleDisplayAvatarModal ] = useState( false );
 
-    return ( !currentUser ? null :
+    return ( currentUser &&
         <>
             <UploadAvatarModal
                 display={ displayAvatarModal }

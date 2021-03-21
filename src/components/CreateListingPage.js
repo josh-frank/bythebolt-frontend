@@ -14,12 +14,13 @@ function CreateListingPage() {
     const dispatch = useDispatch();
 
     const [ newListingFormState, setNewListingFormState ] = useState( {} );
+    console.log('newListingFormState: ', newListingFormState);
 
     const currentUser = useSelector( state => state.currentUser );
     const allCategories = useSelector( state => state.allCategories );
     const allListings = useSelector( state => state.allListings );
 
-    const categoryDropdownOptions = !allCategories ? null : allCategories.map( category => {
+    const categoryDropdownOptions = allCategories && allCategories.map( category => {
         return { key: category.id, text: category.name, value: category.id };
     } );
     
@@ -43,8 +44,7 @@ function CreateListingPage() {
     
     function updateNewListingFormImages( images ) {
         const updatedListingFormState = { ...newListingFormState };
-        updatedListingFormState.images = !images ? null :
-            newListingFormState.images ? newListingFormState.images.concat( images ) : images;
+        updatedListingFormState.images = images && newListingFormState.images ? newListingFormState.images.concat( images ) : images;
         setNewListingFormState( updatedListingFormState );
     }
     
@@ -64,15 +64,16 @@ function CreateListingPage() {
         formData.append( "quantity", newListingFormState.quantity );
         formData.append( "unit", newListingFormState.unit );
         newListingFormState.images.forEach( image => formData.append( "images[]", image ) );
+        newListingFormState.tags.forEach( category => formData.append( "categories[]", category ) );
         fetch( `${ process.env.REACT_APP_API_URL }/listings`, {
             method: "POST",
             body: formData
         } ).then( response => response.json() ).then( newListingData => {
-            dispatch( setAllListings( { ...allListings, newListingData } ) );
+            dispatch( setAllListings( [ ...allListings, newListingData ] ) );
         } );
     }
 
-    const newListingImagePreviews = !newListingFormState.images ? null :
+    const newListingImagePreviews = newListingFormState.images &&
         newListingFormState.images.map( ( image, index ) => {
             return <Popup
                 key={ index }

@@ -11,7 +11,7 @@ function AddUserCategoryDropdown() {
 
     const allCategories = useSelector( state => state.allCategories );
     
-    const categoryDropdownOptions = !allCategories ? null : allCategories.map( category => {
+    const categoryDropdownOptions = allCategories && allCategories.map( category => {
         const disabled = !!currentUser.user_categories ?
             currentUser.user_categories.map( userCategory => userCategory.category.id ).includes( category.id ) :
             false;

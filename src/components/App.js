@@ -11,6 +11,7 @@ import ProfilePage from './ProfilePage';
 import ListingsPage from './ListingsPage';
 import Footer from './Footer';
 import CreateListingPage from './CreateListingPage';
+import ListingView from './ListingView';
 
 function App() {
 
@@ -36,6 +37,9 @@ function App() {
       <section className="app-content">
         <Route exact path="/">
           { useSelector( state => state.allListings ) && <ListingsPage /> }
+        </Route>
+        <Route exact path="/listing/:listingId">
+          <ListingView />
         </Route>
         <Route exact path="/my_profile">
           <ProfilePage activeItem="profile" />
