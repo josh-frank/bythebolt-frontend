@@ -22,7 +22,6 @@ function ListingView() {
     const daysSinceCreated = thisListing && Math.floor( ( Date.now() - Date.parse( thisListing.created_at ) ) / 86_400_000 );
 
     const isMine = currentUser && thisListing && !!currentUser.listings.find( listing => listing.id === thisListing.id )
-    console.log('isMine: ', isMine);
 
     useEffect( () => {
         fetch( `${ process.env.REACT_APP_API_URL }/listings/${ listingId }` )
@@ -130,6 +129,16 @@ function ListingView() {
                     >
                         <Icon name={ thisFavorite ? "heart outline" : "heart" }/>
                         { thisFavorite ? "Remove from Favorites" : "Add to Favorites" }
+                    </Button> }
+                    { isMine && <Button
+                        primary
+                        icon
+                        size="mini"
+                        labelPosition="left"
+                        onClick={ null }
+                    >
+                        <Icon name="edit"/>
+                        Edit listing
                     </Button> }
                 </Segment>
             </Segment.Group>
