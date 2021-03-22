@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { Button, Container, Divider, Grid, Header, Image, Menu, Segment } from "semantic-ui-react";
 import AddUserCategoryDropdown from "./AddUserCategoryDropdown";
+import MyFavoritesPanel from "./MyFavoritesPanel";
 import MyListingsPanel from "./MyListingsPanel";
 import ProfilePanel from "./ProfilePanel";
 import UploadAvatarModal from "./UploadAvatarModal";
@@ -85,7 +86,7 @@ function ProfilePage( { activeItem } ) {
                         <Segment>
                             { activeMenuItem === "profile" && <ProfilePanel /> }
                             { activeMenuItem === "listings" && <MyListingsPanel /> }
-                            { activeMenuItem === "favorites" && <div>Favorites</div> }
+                            { activeMenuItem === "favorites" && <MyFavoritesPanel /> }
                             { activeMenuItem === "settings" && <div>Settings</div> }
                         </Segment>
                     </Grid.Column>

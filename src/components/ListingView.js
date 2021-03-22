@@ -1,20 +1,25 @@
 import 'pure-react-carousel/dist/react-carousel.es.css';
 import { ButtonBack, ButtonNext, CarouselProvider, Image as CarouselImage, Slider, Slide } from 'pure-react-carousel';
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router";
-import { Card, Container, Header, Icon, Image, Label, Segment } from "semantic-ui-react";
+import { Button, Card, Container, Header, Icon, Image, Label, Segment } from "semantic-ui-react";
 import { distanceBetween } from "../utilities/distanceBetween";
+import { setCurrentUser } from '../redux/currentUserSlice';
 
 function ListingView() {
 
     const history = useHistory();
+
+    const dispatch = useDispatch();
 
     const currentUser = useSelector( state => state.currentUser );
 
     const { listingId } = useParams();
 
     const [ thisListing, setThisListing ] = useState( null );
+
+    const daysSinceCreated = thisListing && Math.floor( ( Date.now() - Date.parse( thisListing.created_at ) ) / 86_400_000 );
 
     useEffect( () => {
         fetch( `${ process.env.REACT_APP_API_URL }/listings/${ listingId }` )
@@ -23,6 +28,31 @@ function ListingView() {
                 history.push( "/" );
             } ).then( setThisListing );
     }, [ listingId, history ] );
+
+    const thisFavorite = currentUser && thisListing ? currentUser.favorite_listings.find( favoriteListing => {
+        return favoriteListing.listing.id === thisListing.id;
+    } ) : null;
+
+    const token = localStorage.getItem( "token" );
+
+    function addToFavorites() {
+        fetch( `${ process.env.REACT_APP_API_URL }/favorites`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json", Authorization: `Bearer ${ token }` },
+            body: JSON.stringify( { listing_id: thisListing.id } )
+        } ).then( response => response.json() ).then( userData => {
+            dispatch( setCurrentUser( userData ) );
+        } );
+    }
+
+    function removeFromFavorites() {
+        fetch( `${ process.env.REACT_APP_API_URL }/favorites/${ thisFavorite.id }`, {
+            method: "DELETE",
+            headers: { Authorization: `Bearer ${ token }` }
+        } ).then( response => response.json() ).then( userData => {
+            dispatch( setCurrentUser( userData ) );
+        } );
+    }
 
     const sellerCard = ( thisListing &&
         <Card>
@@ -54,7 +84,7 @@ function ListingView() {
             <Slider>
                 { thisListing.image_urls.map( ( imageUrl, index ) => {
                     return <Slide key={ index } index={ index }>
-                        <Image as={ CarouselImage } src={ imageUrl } isBgImage={ true }/>
+                        <Image as={ CarouselImage } src={ imageUrl }/>
                     </Slide>
                 } ) }
             </Slider>
@@ -81,6 +111,23 @@ function ListingView() {
                 </Segment>
                 <Segment style={ { maxWidth: "25vw" } }>
                     { sellerCard }
+                    <Icon name="calendar alternate" />
+                    Listed { !daysSinceCreated ? null : daysSinceCreated }{ daysSinceCreated < 1 ? "Today" : daysSinceCreated === 1 ? " day ago" : " days ago" }
+                    { !!thisListing.favorites.length && <div>
+                        <Icon name="heart" />
+                            Favorited by { thisListing.favorites.length } { thisListing.favorites.length === 1 ? "user" : "users" }
+                    </div> }
+                    <br /><br />
+                    { currentUser && <Button
+                        primary
+                        icon
+                        size="mini"
+                        labelPosition="left"
+                        onClick={ thisFavorite ? removeFromFavorites : addToFavorites }
+                    >
+                        <Icon name={ thisFavorite ? "heart outline" : "heart" }/>
+                        { thisFavorite ? "Remove from Favorites" : "Add to Favorites" }
+                    </Button> }
                 </Segment>
             </Segment.Group>
             <Segment.Group>

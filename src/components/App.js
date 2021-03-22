@@ -21,7 +21,7 @@ function App() {
     const token = localStorage.getItem( "token" );
     if ( token ) {
       fetch( `${ process.env.REACT_APP_API_URL }/profile`, {
-        headers: { Authorization: `Bearer ${ token }` }
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${ token }` }
       } ).then( response => response.json() ).then( userData => dispatch( setCurrentUser( userData ) ) );
     }
     fetch( `${ process.env.REACT_APP_API_URL }/categories` ).then( response => response.json() )

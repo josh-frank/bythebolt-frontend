@@ -16,7 +16,6 @@ function UserControlPanel() {
     function logOutUser() {
         localStorage.removeItem( "token" );
         dispatch( setCurrentUser( null ) );
-        history.push( "/" );
     }
 
     return (

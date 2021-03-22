@@ -1,11 +1,10 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
-import { Button, Confirm, Header, Icon, Item } from "semantic-ui-react";
-import { setAllListings } from "../redux/allListingsSlice";
+import { Button, Confirm, Icon, Item } from "semantic-ui-react";
 import { setCurrentUser } from "../redux/currentUserSlice";
 
-function MyListingsPanel() {
+function MyFavoritesPanel() {
 
     const history = useHistory();
 
@@ -13,36 +12,34 @@ function MyListingsPanel() {
 
     const currentUser = useSelector( state => state.currentUser );
 
-    const allListings = useSelector( state => state.allListings );
-
     const [ showDeleteModal, toggleShowDeleteModal ] = useState( false );
-    const [ listingToDelete, setListingToDelete ] = useState( null );
+    const [ favoriteToDelete, setFavoriteToDelete ] = useState( null );
 
-    function confirmDeleteListing( listing ) {
-        setListingToDelete( listing );
+    function confirmDeleteFavorite( favorite ) {
+        setFavoriteToDelete( favorite );
         toggleShowDeleteModal( true );
     }
 
-    function cancelDeleteListing() {
-        setListingToDelete( null );
+    function cancelDeleteFavorite() {
+        setFavoriteToDelete( null );
         toggleShowDeleteModal( false );
     }
 
-    function deleteListing() {
+    function deleteFavorite() {
         const token = localStorage.getItem( "token" );
         if ( token ) {
-            fetch( `${ process.env.REACT_APP_API_URL }/listings/${ listingToDelete.id }`, {
+            fetch( `${ process.env.REACT_APP_API_URL }/favorites/${ favoriteToDelete.id }`, {
                 method: "DELETE",
                 headers: { Authorization: `Bearer ${ token }` }
             } ).then( response => response.json() ).then( userData => {
                 dispatch( setCurrentUser( userData ) );
-                dispatch( setAllListings( allListings.filter( listing => listing.id !== listingToDelete.id ) ) );
                 toggleShowDeleteModal( false );
             } );
         }
     }
-    
-    const userListingCards = currentUser.listings.map( listing => {
+
+    const userFavoriteCards = currentUser.favorite_listings.map( favoriteListing => {
+        const { listing } = favoriteListing;
         return <Item key={ listing.id }>
             <Item.Image
                 size="tiny"
@@ -62,10 +59,11 @@ function MyListingsPanel() {
                         negative
                         icon
                         size="mini"
-                        onClick={ () => confirmDeleteListing( listing ) }
+                        labelPosition="left"
+                        onClick={ () => confirmDeleteFavorite( favoriteListing ) }
                     >
-                        <Icon name="trash alternate" />
-                        Delete
+                        <Icon name="heart outline"/>
+                        Remove from favorites
                     </Button>
                 </Item.Extra>
             </Item.Content>
@@ -74,20 +72,19 @@ function MyListingsPanel() {
 
     return (
         <>
-            { listingToDelete && <Confirm
+            { favoriteToDelete && <Confirm
                 open={ showDeleteModal }
-                header={ `Are you sure you want to delete this listing: ${ listingToDelete.title }?` }
-                content={ <Header size="small">This cannot be undone!</Header> }
-                confirmButton="Delete Listing"
-                onConfirm={ deleteListing }
-                onCancel={ cancelDeleteListing }
+                header={ `Are you sure you want to remove the listing "${ favoriteToDelete.listing.title }" from your favorites?` }
+                confirmButton="Remove from Favorites"
+                onConfirm={ deleteFavorite }
+                onCancel={ cancelDeleteFavorite }
             /> }
             <Item.Group>
-                { userListingCards.length ? userListingCards : <em>No listings yet!</em> }
+                { userFavoriteCards.length ? userFavoriteCards : <em>No favorites yet!</em> }
             </Item.Group>
         </>
     );
 
 }
 
-export default MyListingsPanel;
+export default MyFavoritesPanel;

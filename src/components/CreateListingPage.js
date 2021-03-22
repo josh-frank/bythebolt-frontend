@@ -14,7 +14,6 @@ function CreateListingPage() {
     const dispatch = useDispatch();
 
     const [ newListingFormState, setNewListingFormState ] = useState( {} );
-    console.log('newListingFormState: ', newListingFormState);
 
     const currentUser = useSelector( state => state.currentUser );
     const allCategories = useSelector( state => state.allCategories );
@@ -63,7 +62,9 @@ function CreateListingPage() {
         formData.append( "price", newListingFormState.price );
         formData.append( "quantity", newListingFormState.quantity );
         formData.append( "unit", newListingFormState.unit );
-        newListingFormState.images.forEach( image => formData.append( "images[]", image ) );
+        if ( newListingFormState.images ) {
+            newListingFormState.images.forEach( image => formData.append( "images[]", image ) );
+        }
         newListingFormState.tags.forEach( category => formData.append( "categories[]", category ) );
         fetch( `${ process.env.REACT_APP_API_URL }/listings`, {
             method: "POST",
