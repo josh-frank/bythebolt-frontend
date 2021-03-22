@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { Button, Dropdown, Form } from "semantic-ui-react";
+import { Button, Dropdown, Form, Message } from "semantic-ui-react";
 import { setCurrentUser } from "../redux/currentUserSlice";
 import { setSignupModalDisplay } from "../redux/displaySignupModalSlice";
 // import { useHistory } from "react-router-dom";
@@ -9,11 +9,12 @@ function LoginDropdown() {
 
     const defaultLoginFormState = { username: "", password: "", confirmation: "" };
     
-    // const history = useHistory();
     const dispatch = useDispatch();
     
     const [ displayLoginForm, setLoginFormDisplay ] = useState( false );
+
     const [ loginErrors, setLoginErrors ] = useState( [] );
+
     const [ loginFormState, setLoginFormState ] = useState( defaultLoginFormState );
 
     function updateLoginFormState( loginFormChangeEvent ) {
@@ -53,11 +54,11 @@ function LoginDropdown() {
                 onClick={ () => setLoginFormDisplay( !displayLoginForm ) }
             >
                 <Dropdown.Menu onClick={ loginMenuClick => loginMenuClick.stopPropagation() }>
-                    { loginErrors &&
-                        <ul className="user-errors">
-                            { loginErrors.map( ( error, index ) => <li key={ index }>{ error }</li> ) }
-                        </ul>
-                    }
+                    { !!loginErrors.length && <Message
+                        error
+                        header='Login failed'
+                        list={ loginErrors }
+                    /> }
                     <Form style={ { padding: "1rem" } }>
                         <Form.Field className="username-field">
                             <Form.Input

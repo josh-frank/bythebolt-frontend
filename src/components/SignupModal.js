@@ -1,16 +1,17 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { Button, Form, Modal } from "semantic-ui-react";
+import { Button, Form, Message, Modal } from "semantic-ui-react";
 import { setCurrentUser } from "../redux/currentUserSlice";
 import { setSignupModalDisplay } from "../redux/displaySignupModalSlice";
 
 function SignupModal( { display } ) {
 
-    const defaultSignupFormState = { username: "", email: "", password: "", confirmation: "" };
-
     const dispatch = useDispatch();
 
+    const defaultSignupFormState = { username: "", email: "", password: "", confirmation: "" };
+
     const [ signupErrors, setSignupErrors ] = useState( [] );
+
     const [ signupFormState, setSignupFormState ] = useState( defaultSignupFormState );
 
     function updateSignupFormState( signupFormChangeEvent ) {
@@ -48,11 +49,11 @@ function SignupModal( { display } ) {
         <Modal dimmer="inverted" open={ display }>
             <Modal.Header>Sign up</Modal.Header>
                 <Modal.Content>
-                    { signupErrors &&
-                        <ul className="user-errors">
-                            { signupErrors.map( ( error, index ) => <li key={ index }>{ error }</li> ) }
-                        </ul>
-                    }
+                    { !!signupErrors.length && <Message
+                        error
+                        header='Account creation failed'
+                        list={ signupErrors }
+                    /> }
                     <Form>
                         <Form.Field className="username-field">
                             <Form.Input

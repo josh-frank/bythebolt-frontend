@@ -15,8 +15,6 @@ function CreateListingPage() {
 
     const [ newListingFormState, setNewListingFormState ] = useState( {} );
 
-    const currentUser = useSelector( state => state.currentUser );
-
     const allCategories = useSelector( state => state.allCategories );
 
     const allListings = useSelector( state => state.allListings );
@@ -60,7 +58,6 @@ function CreateListingPage() {
 
     function createListing() {
         const formData = new FormData();
-        formData.append( "user_id", currentUser.id );
         formData.append( "title", newListingFormState.title );
         formData.append( "description", newListingFormState.description );
         formData.append( "price", newListingFormState.price );
