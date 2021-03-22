@@ -22,7 +22,6 @@ function CreateListingPage() {
     const allListings = useSelector( state => state.allListings );
 
     const [ newListingErrors, setNewListingErrors ] = useState( [] );
-    console.log('newListingErrors: ', newListingErrors);
 
     const categoryDropdownOptions = allCategories && allCategories.map( category => {
         return { key: category.id, text: category.name, value: category.id };

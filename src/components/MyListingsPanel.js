@@ -65,7 +65,7 @@ function MyListingsPanel() {
                         onClick={ () => confirmDeleteListing( listing ) }
                     >
                         <Icon name="trash alternate" />
-                        Delete
+                        Delete listing
                     </Button>
                 </Item.Extra>
             </Item.Content>

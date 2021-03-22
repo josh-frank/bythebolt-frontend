@@ -21,6 +21,9 @@ function ListingView() {
 
     const daysSinceCreated = thisListing && Math.floor( ( Date.now() - Date.parse( thisListing.created_at ) ) / 86_400_000 );
 
+    const isMine = currentUser && thisListing && !!currentUser.listings.find( listing => listing.id === thisListing.id )
+    console.log('isMine: ', isMine);
+
     useEffect( () => {
         fetch( `${ process.env.REACT_APP_API_URL }/listings/${ listingId }` )
             .then( response => {
@@ -118,7 +121,7 @@ function ListingView() {
                             Favorited by { thisListing.favorites.length } { thisListing.favorites.length === 1 ? "user" : "users" }
                     </div> }
                     <br /><br />
-                    { currentUser && <Button
+                    { !isMine && <Button
                         primary
                         icon
                         size="mini"
