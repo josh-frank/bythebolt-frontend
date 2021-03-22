@@ -23,11 +23,11 @@ function ListingCard( { listing } ) {
 
     return (
         <Card>
-            <Image
+            { listing.image_urls && <Image
                 fluid
                 src={ listing.image_urls[ 0 ] }
                 label={ !daysSinceCreated ? newLabel : null }
-            />
+            /> }
             <Card.Content>
                 <Card.Header as="a" onClick={ () => history.push( `listing/${ listing.id }` ) }>
                     { listing.title }

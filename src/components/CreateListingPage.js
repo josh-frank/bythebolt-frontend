@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { Button, Container, Divider, Dropdown, Form, Grid, Header, Image, Input, Label, Popup, Segment, TextArea } from "semantic-ui-react";
+import { Button, Container, Divider, Dropdown, Form, Grid, Header, Image, Input, Label, Message, Popup, Segment, TextArea } from "semantic-ui-react";
 import Dropzone from 'react-dropzone'
 import { setAllListings } from "../redux/allListingsSlice";
 
@@ -16,8 +16,13 @@ function CreateListingPage() {
     const [ newListingFormState, setNewListingFormState ] = useState( {} );
 
     const currentUser = useSelector( state => state.currentUser );
+
     const allCategories = useSelector( state => state.allCategories );
+
     const allListings = useSelector( state => state.allListings );
+
+    const [ newListingErrors, setNewListingErrors ] = useState( [] );
+    console.log('newListingErrors: ', newListingErrors);
 
     const categoryDropdownOptions = allCategories && allCategories.map( category => {
         return { key: category.id, text: category.name, value: category.id };
@@ -65,13 +70,21 @@ function CreateListingPage() {
         if ( newListingFormState.images ) {
             newListingFormState.images.forEach( image => formData.append( "images[]", image ) );
         }
-        newListingFormState.tags.forEach( category => formData.append( "categories[]", category ) );
+        if ( newListingFormState.tags ) {
+            newListingFormState.tags.forEach( category => formData.append( "categories[]", category ) );
+        }
         fetch( `${ process.env.REACT_APP_API_URL }/listings`, {
             method: "POST",
             body: formData
-        } ).then( response => response.json() ).then( newListingData => {
+        } ).then( response => {
+            if ( response.ok ) {
+                setNewListingErrors( [] );
+                return response.json();
+            } else { return response.json().then( errorData => { throw errorData } ); }
+        } ).then( newListingData => {
             dispatch( setAllListings( [ ...allListings, newListingData ] ) );
-        } );
+            history.push( `listing/${ newListingData.id }` );
+        } ).catch( errorData => setNewListingErrors( errorData.errors ) );
     }
 
     const newListingImagePreviews = newListingFormState.images &&
@@ -97,6 +110,11 @@ function CreateListingPage() {
     return (
         <Container style={ { marginTop: "10px" } }>
             <Header size="huge">Create new listing</Header>
+            { !!newListingErrors.length && <Message
+                error
+                header='There was a problem creating this listing'
+                list={ newListingErrors }
+            /> }
             <Segment>
                 <Label>Listing title</Label>
                 <Input
