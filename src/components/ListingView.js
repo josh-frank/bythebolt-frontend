@@ -121,7 +121,7 @@ function ListingView() {
                             Favorited by { thisListing.favorites.length } { thisListing.favorites.length === 1 ? "user" : "users" }
                     </div> }
                     <br /><br />
-                    { !isMine && <Button
+                    { currentUser && !isMine && <Button
                         primary
                         icon
                         size="mini"
