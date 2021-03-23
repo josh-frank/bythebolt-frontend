@@ -94,7 +94,7 @@ function LocationModal( { displayModal, toggleDisplayModal } ) {
                 </Button>
             </Modal.Actions>
         </Modal>
-    )
+    );
 
 }
 

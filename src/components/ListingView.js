@@ -6,12 +6,15 @@ import { useHistory, useParams } from "react-router";
 import { Button, Card, Container, Header, Icon, Image, Label, Segment } from "semantic-ui-react";
 import { distanceBetween } from "../utilities/distanceBetween";
 import { setCurrentUser } from '../redux/currentUserSlice';
+import EditListingModal from './EditListingModal';
 
 function ListingView() {
 
     const history = useHistory();
 
     const dispatch = useDispatch();
+
+    const [ displayEditModal, toggleDisplayEditModal ] = useState( false );
 
     const currentUser = useSelector( state => state.currentUser );
 
@@ -96,70 +99,77 @@ function ListingView() {
     );
 
     return ( thisListing &&
-        <Container style={ { marginTop: "10px" } }>
-            <Segment.Group>
-                <Segment>
-                    <Header size="huge">{ thisListing.title }</Header>
-                </Segment>
-                <Segment secondary>
-                    { thisListing.listing_categories.map( listingCategory => {
-                        return <Label tag key={ listingCategory.id }>{ listingCategory.category.name }</Label>
-                    } ) }
-                </Segment>
-            </Segment.Group>
-            <Segment.Group horizontal>
-                <Segment loading={ !thisListing }>
-                    { listingImageCarousel }
-                </Segment>
-                <Segment style={ { maxWidth: "25vw" } }>
-                    { sellerCard }
-                    <Icon name="calendar alternate" />
-                    Listed { !daysSinceCreated ? null : daysSinceCreated }{ daysSinceCreated < 1 ? "Today" : daysSinceCreated === 1 ? " day ago" : " days ago" }
-                    { !!thisListing.favorites.length && <div>
-                        <Icon name="heart" />
-                            Favorited by { thisListing.favorites.length } { thisListing.favorites.length === 1 ? "user" : "users" }
-                    </div> }
-                    <br /><br />
-                    { currentUser && !isMine && <Button
-                        primary
-                        icon
-                        size="mini"
-                        labelPosition="left"
-                        onClick={ thisFavorite ? removeFromFavorites : addToFavorites }
-                    >
-                        <Icon name={ thisFavorite ? "heart outline" : "heart" }/>
-                        { thisFavorite ? "Remove from Favorites" : "Add to Favorites" }
-                    </Button> }
-                    { isMine && <Button
-                        primary
-                        icon
-                        size="mini"
-                        labelPosition="left"
-                        onClick={ null }
-                    >
-                        <Icon name="edit"/>
-                        Edit listing
-                    </Button> }
-                </Segment>
-            </Segment.Group>
-            <Segment.Group>
-                <Segment>
-                    <Label ribbon color={ thisListing.quantity === 1 ? "red" : null }>
-                        { thisListing.quantity === 1 ? "Last one!" : thisListing.quantity + " available" }
-                    </Label>
-                    <span style={ { fontSize: "21pt", fontWeight: "bold" } }>
-                        ${ parseFloat( thisListing.price ).toFixed( Number.isInteger( parseFloat( thisListing.price ) ) ? 0 : 2 ) }
-                    </span>
-                    { thisListing.unit && <span style={ { fontSize: "16pt", fontWeight: "bold" } }>/{ thisListing.unit }</span> }
-                    &nbsp;
-                </Segment>
-                <Segment>
-                    <Label ribbon>Description</Label>
-                    <br /><br />
-                    <p style={ { fontSize: "12pt" } }>{ thisListing.description }</p>
-                </Segment>
-            </Segment.Group>
-        </Container>
+        <>
+            <EditListingModal
+                listing={ thisListing }
+                display={ displayEditModal }
+                toggleDisplay={ toggleDisplayEditModal }
+            />
+            <Container style={ { marginTop: "10px" } }>
+                <Segment.Group>
+                    <Segment>
+                        <Header size="huge">{ thisListing.title }</Header>
+                    </Segment>
+                    <Segment secondary>
+                        { thisListing.listing_categories.map( listingCategory => {
+                            return <Label tag key={ listingCategory.id }>{ listingCategory.category.name }</Label>
+                        } ) }
+                    </Segment>
+                </Segment.Group>
+                <Segment.Group horizontal>
+                    <Segment loading={ !thisListing }>
+                        { listingImageCarousel }
+                    </Segment>
+                    <Segment style={ { maxWidth: "25vw" } }>
+                        { sellerCard }
+                        <Icon name="calendar alternate" />
+                        Listed { !daysSinceCreated ? null : daysSinceCreated }{ daysSinceCreated < 1 ? "Today" : daysSinceCreated === 1 ? " day ago" : " days ago" }
+                        { !!thisListing.favorites.length && <div>
+                            <Icon name="heart" />
+                                Favorited by { thisListing.favorites.length } { thisListing.favorites.length === 1 ? "user" : "users" }
+                        </div> }
+                        <br /><br />
+                        { currentUser && !isMine && <Button
+                            primary
+                            icon
+                            size="mini"
+                            labelPosition="left"
+                            onClick={ thisFavorite ? removeFromFavorites : addToFavorites }
+                        >
+                            <Icon name={ thisFavorite ? "heart outline" : "heart" }/>
+                            { thisFavorite ? "Remove from Favorites" : "Add to Favorites" }
+                        </Button> }
+                        { isMine && <Button
+                            primary
+                            icon
+                            size="mini"
+                            labelPosition="left"
+                            onClick={ () => toggleDisplayEditModal( true ) }
+                        >
+                            <Icon name="edit"/>
+                            Edit listing
+                        </Button> }
+                    </Segment>
+                </Segment.Group>
+                <Segment.Group>
+                    <Segment>
+                        <Label ribbon color={ thisListing.quantity === 1 ? "red" : null }>
+                            { thisListing.quantity === 1 ? "Last one!" : thisListing.quantity + " available" }
+                        </Label>
+                        <span style={ { fontSize: "21pt", fontWeight: "bold" } }>
+                            ${ parseFloat( thisListing.price ).toFixed( Number.isInteger( parseFloat( thisListing.price ) ) ? 0 : 2 ) }
+                        </span>
+                        { thisListing.unit && <span style={ { fontSize: "16pt", fontWeight: "bold" } }>/{ thisListing.unit }</span> }
+                        &nbsp;
+                    </Segment>
+                    <Segment>
+                        <Label ribbon>Description</Label>
+                        <br /><br />
+                        <p style={ { fontSize: "12pt" } }>{ thisListing.description }</p>
+                    </Segment>
+                </Segment.Group>
+            </Container>
+        </>
     );
 
 }
