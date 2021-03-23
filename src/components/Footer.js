@@ -9,7 +9,7 @@ function Footer() {
             style={ { marginTop: "10px" } }
         >
             <div style={ { color: "white", marginLeft: "auto", marginRight: "auto", marginTop: "10px" } }>
-                © { new Date().getFullYear() } By The Bolt
+                © { new Date().getFullYear() } Buy The Bolt
             </div>
         </Menu>
     );

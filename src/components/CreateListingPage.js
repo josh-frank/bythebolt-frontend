@@ -57,7 +57,7 @@ function CreateListingPage() {
     }
 
     function createListing() {
-        const formData = new FormData();
+        const token = localStorage.getItem( "token" ), formData = new FormData();
         formData.append( "title", newListingFormState.title );
         formData.append( "description", newListingFormState.description );
         formData.append( "price", newListingFormState.price );
@@ -69,18 +69,21 @@ function CreateListingPage() {
         if ( newListingFormState.tags ) {
             newListingFormState.tags.forEach( category => formData.append( "categories[]", category ) );
         }
-        fetch( `${ process.env.REACT_APP_API_URL }/listings`, {
-            method: "POST",
-            body: formData
-        } ).then( response => {
-            if ( response.ok ) {
-                setNewListingErrors( [] );
-                return response.json();
-            } else { return response.json().then( errorData => { throw errorData } ); }
-        } ).then( newListingData => {
-            dispatch( setAllListings( [ ...allListings, newListingData ] ) );
-            history.push( `listing/${ newListingData.id }` );
-        } ).catch( errorData => setNewListingErrors( errorData.errors ) );
+        if ( token ) {
+            fetch( `${ process.env.REACT_APP_API_URL }/listings`, {
+                method: "POST",
+                headers: { Authorization: `Bearer ${ token }` },
+                body: formData
+            } ).then( response => {
+                if ( response.ok ) {
+                    setNewListingErrors( [] );
+                    return response.json();
+                } else { return response.json().then( errorData => { throw errorData } ); }
+            } ).then( newListingData => {
+                dispatch( setAllListings( [ ...allListings, newListingData ] ) );
+                history.push( `listing/${ newListingData.id }` );
+            } ).catch( errorData => setNewListingErrors( errorData.errors ) );
+        }
     }
 
     const newListingImagePreviews = newListingFormState.images &&

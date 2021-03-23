@@ -18,7 +18,7 @@ function NavBar() {
             <Menu color="blue" borderless inverted stackable secondary>
                 <Menu.Item position="left">
                     <Link to="/">
-                        <h1 className="logo">By the Bolt</h1>
+                        <h1 className="logo">Buy the Bolt</h1>
                     </Link>
                 </Menu.Item>
                 <Menu.Item style={ { width: "40vw" } }>

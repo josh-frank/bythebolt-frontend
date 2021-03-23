@@ -1,11 +1,18 @@
 import { useState } from "react";
 import Dropzone from "react-dropzone";
-import { useSelector } from "react-redux";
-import { Button, Divider, Dropdown, Form, Grid, Header, Image, Input, Label, Modal, Popup, Segment, TextArea } from "semantic-ui-react";
+import { useDispatch, useSelector } from "react-redux";
+import { Button, Divider, Dropdown, Form, Grid, Header, Image, Input, Label, Message, Modal, Popup, Segment, TextArea } from "semantic-ui-react";
+import { setAllListings } from "../redux/allListingsSlice";
 
 function EditListingModal( { listing, display, toggleDisplay } ) {
 
+    const dispatch = useDispatch();
+
     const allCategories = useSelector( state => state.allCategories );
+
+    const allListings = useSelector( state => state.allListings );
+
+    const [ editListingErrors, setEditListingErrors ] = useState( [] );
 
     const categoryDropdownOptions = allCategories && allCategories.map( category => {
         return { key: category.id, text: category.name, value: category.id };
@@ -19,7 +26,7 @@ function EditListingModal( { listing, display, toggleDisplay } ) {
         unit: listing.unit,
         image_urls: listing.image_urls,
         new_images: [],
-        categories: listing.listing_categories.map( listingCategory => listingCategory.category )
+        categories: listing.listing_categories.map( listingCategory => listingCategory.category.id )
     } );
 
     const listingImagePreviews = (
@@ -91,7 +98,11 @@ function EditListingModal( { listing, display, toggleDisplay } ) {
         setEditListingFormState( updatedListingFormState );
     }
     
-    function updateEditListingFormTags( categoryIdsArray ) {}
+    function updateEditListingFormTags( categoryIdsArray ) {
+        const updatedListingFormState = { ...editListingFormState };
+        updatedListingFormState.categories = categoryIdsArray ? categoryIdsArray : [];
+        setEditListingFormState( updatedListingFormState );
+    }
 
     function addEditListingFormNewImages( images ) {
         const updatedListingFormState = { ...editListingFormState };
@@ -111,6 +122,41 @@ function EditListingModal( { listing, display, toggleDisplay } ) {
         setEditListingFormState( updatedListingFormState );
     }
 
+    function createListing() {
+        const token = localStorage.getItem( "token" ), formData = new FormData();
+        formData.append( "title", editListingFormState.title );
+        formData.append( "description", editListingFormState.description );
+        formData.append( "price", editListingFormState.price );
+        formData.append( "quantity", editListingFormState.quantity );
+        formData.append( "unit", editListingFormState.unit );
+        if ( editListingFormState.image_urls ) {
+            editListingFormState.image_urls.forEach( imageUrl => formData.append( "image_urls[]", imageUrl ) );
+        }
+        if ( editListingFormState.new_images ) {
+            editListingFormState.new_images.forEach( newImage => formData.append( "new_images[]", newImage ) );
+        }
+        if ( editListingFormState.categories ) {
+            editListingFormState.categories.forEach( category => formData.append( "categories[]", category ) );
+        }
+        if ( token ) {
+            fetch( `${ process.env.REACT_APP_API_URL }/listings/${ listing.id }`, {
+                method: "PATCH",
+                headers: { Authorization: `Bearer ${ token }` },
+                body: formData
+            } ).then( response => {
+                if ( response.ok ) {
+                    setEditListingErrors( [] );
+                    return response.json();
+                } else { return response.json().then( errorData => { throw errorData } ); }
+            } ).then( newListingData => {
+                const editedListings = allListings.filter( listing => listing.id !== newListingData.id );
+                dispatch( setAllListings( [ ...editedListings, newListingData ] ) );
+                toggleDisplay( false );
+                window.location.reload();
+            } ).catch( errorData => setEditListingErrors( errorData.errors ) );
+        }
+    }
+
     return (
         <Modal
             size="large"
@@ -119,6 +165,11 @@ function EditListingModal( { listing, display, toggleDisplay } ) {
         >
             <Modal.Header>Edit listing details</Modal.Header>
             <Modal.Content>
+                { !!editListingErrors.length && <Message
+                    error
+                    header='There was a problem creating this listing'
+                    list={ editListingErrors }
+                /> }
                 <Label>Listing title</Label>
                 <Input
                     fluid
@@ -192,15 +243,15 @@ function EditListingModal( { listing, display, toggleDisplay } ) {
                     clearable
                     placeholder="Add tags"
                     options={ categoryDropdownOptions }
-                    defaultValue={ editListingFormState.categories.map( category => category.id ) }
+                    defaultValue={ editListingFormState.categories }
                     onChange={ ( changeEvent, { value } ) => updateEditListingFormTags( value ) }
                 />
             </Modal.Content>
             <Modal.Actions>
-                <Button
-                    negative
-                    onClick={ () => toggleDisplay( false ) }
-                >
+                <Button positive onClick={ createListing }>
+                    Save edits
+                </Button>
+                <Button negative onClick={ () => toggleDisplay( false ) }>
                     Cancel
                 </Button>
             </Modal.Actions>
