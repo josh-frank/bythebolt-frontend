@@ -21,6 +21,7 @@ function ListingView() {
     const { listingId } = useParams();
 
     const [ thisListing, setThisListing ] = useState( null );
+    console.log('thisListing: ', thisListing);
 
     const daysSinceCreated = thisListing && Math.floor( ( Date.now() - Date.parse( thisListing.created_at ) ) / 86_400_000 );
 
@@ -81,21 +82,23 @@ function ListingView() {
     );
 
     const listingImageCarousel = ( thisListing &&
-        <CarouselProvider
-            naturalSlideWidth={6}
-            naturalSlideHeight={4}
-            totalSlides={ thisListing.image_urls.length }
-        >
-            <Slider>
-                { thisListing.image_urls.map( ( imageUrl, index ) => {
-                    return <Slide key={ index } index={ index }>
-                        <Image as={ CarouselImage } src={ imageUrl }/>
-                    </Slide>
-                } ) }
-            </Slider>
-            <ButtonBack>Back</ButtonBack>
-            <ButtonNext>Next</ButtonNext>
-        </CarouselProvider>
+        thisListing.image_urls ?
+            <CarouselProvider
+                naturalSlideWidth={6}
+                naturalSlideHeight={4}
+                totalSlides={ thisListing.image_urls.length }
+            >
+                <Slider>
+                    { thisListing.image_urls.map( ( imageUrl, index ) => {
+                        return <Slide key={ index } index={ index }>
+                            <Image as={ CarouselImage } src={ imageUrl }/>
+                        </Slide>
+                    } ) }
+                </Slider>
+                <ButtonBack>Back</ButtonBack>
+                <ButtonNext>Next</ButtonNext>
+            </CarouselProvider>
+        : <em>No images</em>
     );
 
     return ( thisListing &&

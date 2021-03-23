@@ -32,7 +32,7 @@ function EditListingModal( { listing, display, toggleDisplay } ) {
     const listingImagePreviews = (
         <>
             <Grid>
-                { editListingFormState.image_urls.map( imageUrl => {
+                { editListingFormState.image_urls && editListingFormState.image_urls.map( imageUrl => {
                     return <Popup
                         key={ imageUrl }
                         inverted

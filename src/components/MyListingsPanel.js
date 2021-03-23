@@ -46,7 +46,11 @@ function MyListingsPanel() {
         return <Item key={ listing.id }>
             <Item.Image
                 size="tiny"
-                src={ listing.image_urls[ 0 ] }
+                style={ {
+                    backgroundImage: `url( ${ listing.image_urls[ 0 ] } )`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center"
+                } }
             />
             <Item.Content>
                 <Item.Header

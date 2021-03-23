@@ -10,7 +10,7 @@ function ListingsPage() {
 
     return (
         <Container style={ { marginTop: "10px" } }>
-            <Card.Group>
+            <Card.Group centered>
                 { cardList }
             </Card.Group>
         </Container>

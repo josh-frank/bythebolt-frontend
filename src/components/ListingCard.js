@@ -24,8 +24,12 @@ function ListingCard( { listing } ) {
     return (
         <Card>
             { listing.image_urls && <Image
-                fluid
-                src={ listing.image_urls[ 0 ] }
+                style={ {
+                    height: "250px",
+                    backgroundImage: `url( ${ listing.image_urls[ 0 ] } )`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center"
+                } }
                 label={ !daysSinceCreated ? newLabel : null }
             /> }
             <Card.Content>
