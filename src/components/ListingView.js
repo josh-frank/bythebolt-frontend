@@ -21,7 +21,6 @@ function ListingView() {
     const { listingId } = useParams();
 
     const [ thisListing, setThisListing ] = useState( null );
-    console.log('thisListing: ', thisListing);
 
     const daysSinceCreated = thisListing && Math.floor( ( Date.now() - Date.parse( thisListing.created_at ) ) / 86_400_000 );
 

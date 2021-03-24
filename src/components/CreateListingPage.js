@@ -15,11 +15,11 @@ function CreateListingPage() {
 
     const [ newListingFormState, setNewListingFormState ] = useState( {} );
 
+    const [ newListingErrors, setNewListingErrors ] = useState( [] );
+
     const allCategories = useSelector( state => state.allCategories );
 
     const allListings = useSelector( state => state.allListings );
-
-    const [ newListingErrors, setNewListingErrors ] = useState( [] );
 
     const categoryDropdownOptions = allCategories && allCategories.map( category => {
         return { key: category.id, text: category.name, value: category.id };
@@ -109,7 +109,7 @@ function CreateListingPage() {
     return (
         <Container style={ { marginTop: "10px" } }>
             <Header size="huge">Create new listing</Header>
-            { !!newListingErrors.length && <Message
+            { newListingErrors && !!newListingErrors.length && <Message
                 error
                 header='There was a problem creating this listing'
                 list={ newListingErrors }
@@ -157,14 +157,15 @@ function CreateListingPage() {
                                 { key: 2, text: "Spool", value: "spool" },
                                 { key: 3, text: "Roll", value: "roll" },
                                 { key: 4, text: "Bolt", value: "bolt" },
-                                { key: 5, text: "Inch", value: "inch" },
-                                { key: 6, text: "Yard", value: "yard" },
-                                { key: 7, text: "Centimeter", value: "centimeter" },
-                                { key: 8, text: "Meter", value: "meter" },
-                                { key: 9, text: "Ounce", value: "ounce" },
-                                { key: 10, text: "Pound", value: "pound" },
-                                { key: 11, text: "Gram", value: "gram" },
-                                { key: 12, text: "Kilogram", value: "kilogram" }
+                                { key: 5, text: "Skein", value: "skein" },
+                                { key: 6, text: "Inch", value: "inch" },
+                                { key: 7, text: "Yard", value: "yard" },
+                                { key: 8, text: "Centimeter", value: "centimeter" },
+                                { key: 9, text: "Meter", value: "meter" },
+                                { key: 10, text: "Ounce", value: "ounce" },
+                                { key: 11, text: "Pound", value: "pound" },
+                                { key: 12, text: "Gram", value: "gram" },
+                                { key: 13, text: "Kilogram", value: "kilogram" }
                             ] }
                             onChange={ ( changeEvent, { value } ) => updateNewListingFormUnit( value ) }
                         />
