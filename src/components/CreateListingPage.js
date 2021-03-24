@@ -1,10 +1,11 @@
-// import { useSelector } from "react-redux";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { Button, Container, Divider, Dropdown, Form, Grid, Header, Image, Input, Label, Message, Popup, Segment, TextArea } from "semantic-ui-react";
 import Dropzone from 'react-dropzone'
 import { setAllListings } from "../redux/allListingsSlice";
+import { setCurrentUser } from "../redux/currentUserSlice";
+import { fetchProfile } from "../utilities/fetchData";
 
 function CreateListingPage() {
 
@@ -81,6 +82,7 @@ function CreateListingPage() {
                 } else { return response.json().then( errorData => { throw errorData } ); }
             } ).then( newListingData => {
                 dispatch( setAllListings( [ ...allListings, newListingData ] ) );
+                fetchProfile( token ).then( userData => dispatch( setCurrentUser( userData ) ) );
                 history.push( `listing/${ newListingData.id }` );
             } ).catch( errorData => setNewListingErrors( errorData.errors ) );
         }

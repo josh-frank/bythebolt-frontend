@@ -1,6 +1,6 @@
 import '../App.css';
 import { useEffect } from 'react';
-import { Route /*, NavLink, Switch */ } from "react-router-dom";
+import { Route, /*NavLink,*/ Switch } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
 import { setCurrentUser } from '../redux/currentUserSlice';
 import { setAllCategories } from '../redux/allCategoriesSlice';
@@ -12,6 +12,7 @@ import ListingsPage from './ListingsPage';
 import Footer from './Footer';
 import CreateListingPage from './CreateListingPage';
 import ListingView from './ListingView';
+import { fetchProfile, fetchCategories } from '../utilities/fetchData';
 
 function App() {
 
@@ -20,12 +21,9 @@ function App() {
   useEffect( () => {
     const token = localStorage.getItem( "token" );
     if ( token ) {
-      fetch( `${ process.env.REACT_APP_API_URL }/profile`, {
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${ token }` }
-      } ).then( response => response.json() ).then( userData => dispatch( setCurrentUser( userData ) ) );
+      fetchProfile( token ).then( userData => dispatch( setCurrentUser( userData ) ) );
     }
-    fetch( `${ process.env.REACT_APP_API_URL }/categories` ).then( response => response.json() )
-        .then( categoryData => dispatch( setAllCategories( categoryData ) ) );
+    fetchCategories().then( categoryData => dispatch( setAllCategories( categoryData ) ) );
     fetch( `${ process.env.REACT_APP_API_URL }/listings` ).then( response => response.json() )
         .then( listingData => dispatch( setAllListings( listingData ) ) );
   }, [ dispatch ] );
@@ -35,27 +33,29 @@ function App() {
       <section><NavBar /></section>
       <section><CategoryMenu /></section>
       <section className="app-content">
-        <Route exact path="/">
-          { useSelector( state => state.allListings ) && <ListingsPage /> }
-        </Route>
-        <Route exact path="/listing/:listingId">
-          <ListingView />
-        </Route>
-        <Route exact path="/my_profile">
-          <ProfilePage activeItem="profile" />
-        </Route>
-        <Route exact path="/my_listings">
-          <ProfilePage activeItem="listings" />
-        </Route>
-        <Route exact path="/my_favorites">
-          <ProfilePage activeItem="favorites" />
-        </Route>
-        <Route exact path="/settings">
-          <ProfilePage activeItem="settings" />
-        </Route>
-        <Route exact path="/new_listing">
-          <CreateListingPage />
-        </Route>
+        <Switch>
+          <Route exact path="/">
+            { useSelector( state => state.allListings ) && <ListingsPage /> }
+          </Route>
+          <Route exact path="/listing/:listingId">
+            <ListingView />
+          </Route>
+          <Route exact path="/my_profile">
+            <ProfilePage activeItem="profile" />
+          </Route>
+          <Route exact path="/my_listings">
+            <ProfilePage activeItem="listings" />
+          </Route>
+          <Route exact path="/my_favorites">
+            <ProfilePage activeItem="favorites" />
+          </Route>
+          <Route exact path="/settings">
+            <ProfilePage activeItem="settings" />
+          </Route>
+          <Route exact path="/new_listing">
+            <CreateListingPage />
+          </Route>
+        </Switch>
       </section>
       <section><Footer /></section>
     </div>
