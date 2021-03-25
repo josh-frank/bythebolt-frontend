@@ -36,7 +36,8 @@ function ChatsPage() {
                     </Menu>
                 </Grid.Column>
                 <Grid.Column
-                    stretched width={ 12 }
+                    stretched
+                    width={ 12 }
                     style={ { backgroundColor: "white", marginTop: "15px" } }
                 >
                     { selectedChat.messages && <ChatPanel chat={ selectedChat } setChat={ setSelectedChat } /> }

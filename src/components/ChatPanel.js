@@ -64,7 +64,9 @@ function ChatPanel( { chat, setChat } ) {
 
     return (
         <>
-            <div>{ chatMessages }</div>
+            <div style={ { height: "60vh", whiteSpace: "nowrap", overflowY: "auto" } }>
+                { chatMessages }
+            </div>
             <Divider />
             <Form onSubmit={ sendMessage }>
                 <Form.Group>
