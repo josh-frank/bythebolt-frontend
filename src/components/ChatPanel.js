@@ -1,44 +1,74 @@
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Form, Image, Input, Segment } from "semantic-ui-react";
+import { Divider, Form, Image, Input, Message } from "semantic-ui-react";
 import consumer from "../cable";
 
 function ChatPanel( { chat } ) {
-    
+
+    useEffect( () => {
+        const subscription = consumer.subscriptions.create( {
+            channel: "ChatChannel",
+            chat_id: chat.id
+        }, {
+            received: updatedChatData => {
+                console.log('updatedChatData: ', updatedChatData);
+                chat.messages.push( updatedChatData );
+            }
+        } );
+        return () => subscription.unsubscribe();
+    }, [ chat ] );
+
     const currentUser = useSelector( state => state.currentUser );
+
+    const [ newMessage, setNewMessage ] = useState( "" );
 
     function isFromMe( message ) { return message.message_user.username === currentUser.username; }
 
+    function sendMessage() {
+        fetch( `${ process.env.REACT_APP_API_URL }/messages`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify( {
+                content: newMessage,
+                chat_id: chat.id,
+                user_id: currentUser.id
+            } )
+        } ).then( response => response.json() ).then( () => setNewMessage( "" ) );
+    }
+
     const chatMessages = chat.messages.map( message => {
-        return <Segment
-            clearing
-            compact
+        return <Message
             key={ message.id }
-            inverted={ true }
-            floated={ isFromMe( message ) ? "right" : "left" }
             color={ isFromMe( message ) ? "blue" : "grey" }
         >
-            { message.content }
             <Image
                 avatar
                 src={ message.message_user.avatar_url }
                 alt={ message.message_user.username }
                 floated={ isFromMe( message ) ? "right" : "left" }
             />
-            <br />
-            <small>{ new Date( message.created_at ).toLocaleString() }</small>
-        </Segment>
+            <div align={ isFromMe( message ) ? "right" : "left" }>
+                { message.content }
+                <br />
+                <span style={ { fontSize: "8pt" } }>
+                    { new Date( message.created_at ).toLocaleString() }
+                </span>
+            </div>
+        </Message>
     } );
 
     return (
         <>
             <div>{ chatMessages }</div>
-            <Form onSubmit={ null }>
+            <Divider />
+            <Form onSubmit={ sendMessage }>
                 <Form.Group>
                     <Form.Field
                         as={ Input }
-                        action='Send'
-                        onChange = { null }
                         width={ 14 }
+                        action='Send'
+                        value={ newMessage }
+                        onChange = { changeEvent => setNewMessage( changeEvent.target.value ) }
                     />
                 </Form.Group>
             </Form>

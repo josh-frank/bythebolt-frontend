@@ -35,9 +35,9 @@ function LoginDropdown() {
                 return response.json();
             } else { return response.json().then( errorData => { throw errorData } ); }
         } ).then( responseData => {
+                setLoginFormDisplay( false );
                 dispatch( setCurrentUser( responseData.user ) );
                 localStorage.setItem( "token", responseData.token );
-                setLoginFormDisplay( false );
                 // history.push( "/" );
             } ).catch( errorData => setLoginErrors( errorData.errors ) );
     }
