@@ -13,6 +13,7 @@ import Footer from './Footer';
 import CreateListingPage from './CreateListingPage';
 import ListingView from './ListingView';
 import { fetchProfile, fetchCategories } from '../utilities/fetchData';
+import ChatsPage from './ChatsPage';
 
 function App() {
 
@@ -36,6 +37,9 @@ function App() {
         <Switch>
           <Route exact path="/">
             { useSelector( state => state.allListings ) && <ListingsPage /> }
+          </Route>
+          <Route exact path="/chats">
+            <ChatsPage />
           </Route>
           <Route exact path="/listing/:listingId">
             <ListingView />
