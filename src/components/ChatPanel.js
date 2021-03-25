@@ -1,10 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { Divider, Form, Image, Input, Message } from "semantic-ui-react";
 import consumer from "../cable";
 
 function ChatPanel( { chat, setChat } ) {
-    console.log('chat: ', chat);
 
     const currentUser = useSelector( state => state.currentUser );
 
@@ -62,10 +61,17 @@ function ChatPanel( { chat, setChat } ) {
         </Message>
     } );
 
+    function ScrollToBottom() {
+        const elementRef = useRef();
+        useEffect( () => elementRef.current.scrollIntoView() );
+        return <div ref={elementRef} />;
+    };
+
     return (
         <>
             <div style={ { height: "60vh", whiteSpace: "nowrap", overflowY: "auto" } }>
                 { chatMessages }
+                <ScrollToBottom />
             </div>
             <Divider />
             <Form onSubmit={ sendMessage }>
@@ -73,7 +79,7 @@ function ChatPanel( { chat, setChat } ) {
                     <Form.Field
                         as={ Input }
                         width={ 14 }
-                        action='Send'
+                        action={ { icon: "send", content: "Send" } }
                         value={ newMessage }
                         onChange = { changeEvent => setNewMessage( changeEvent.target.value ) }
                     />

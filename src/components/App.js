@@ -41,6 +41,9 @@ function App() {
           <Route exact path="/chats">
             <ChatsPage />
           </Route>
+          <Route exact path="/chats/:chatId">
+            <ChatsPage />
+          </Route>
           <Route exact path="/listing/:listingId">
             <ListingView />
           </Route>

@@ -3,7 +3,7 @@ import { ButtonBack, ButtonNext, CarouselProvider, Image as CarouselImage, Slide
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router";
-import { Button, Card, Container, Header, Icon, Image, Label, Segment } from "semantic-ui-react";
+import { Button, Card, Container, Form, Header, Icon, Image, Input, Label, Segment } from "semantic-ui-react";
 import { distanceBetween } from "../utilities/distanceBetween";
 import { setCurrentUser } from '../redux/currentUserSlice';
 import EditListingModal from './EditListingModal';
@@ -13,14 +13,16 @@ function ListingView() {
     const history = useHistory();
 
     const dispatch = useDispatch();
+    
+    const currentUser = useSelector( state => state.currentUser );
+    
+    const { listingId } = useParams();
+    
+    const [ thisListing, setThisListing ] = useState( null );
 
     const [ displayEditModal, toggleDisplayEditModal ] = useState( false );
 
-    const currentUser = useSelector( state => state.currentUser );
-
-    const { listingId } = useParams();
-
-    const [ thisListing, setThisListing ] = useState( null );
+    const [ startChatFormState, setStartChatFormState ] = useState( "" );
 
     const daysSinceCreated = thisListing && Math.floor( ( Date.now() - Date.parse( thisListing.created_at ) ) / 86_400_000 );
 
@@ -57,6 +59,23 @@ function ListingView() {
         } ).then( response => response.json() ).then( userData => {
             dispatch( setCurrentUser( userData ) );
         } );
+    }
+
+    function sendMessage() {
+        const chatToContinue = currentUser.chats.find( chat => chat.listing_id === thisListing.id );
+        if ( chatToContinue ) {
+            console.log( "This chat already exists" );
+        } else {
+            console.log( "No chat exists yet" );
+            fetch( `${ process.env.REACT_APP_API_URL }/chats`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json", Authorization: `Bearer ${ token }` },
+                body: JSON.stringify( { listing_id: thisListing.id, message_content: startChatFormState } )
+            } ).then( response => response.json() ).then( newChatData => {
+                dispatch( setCurrentUser( newChatData.current_user ) );
+                history.push( `/chats/${ newChatData.new_chat.id }` )
+            } );
+        }
     }
 
     const sellerCard = ( thisListing &&
@@ -100,6 +119,21 @@ function ListingView() {
         : <em>No images</em>
     );
 
+    const sendMessageForm = (
+        <Form onSubmit={ sendMessage }>
+            <Form.Group>
+                <Form.Field
+                    as={ Input }
+                    width={ 14 }
+                    action={ { icon: "send" } }
+                    placeholder="Send message..."
+                    value={ startChatFormState }
+                    onChange = { changeEvent => setStartChatFormState( changeEvent.target.value ) }
+                />
+            </Form.Group>
+        </Form>
+    );
+
     return ( thisListing &&
         <>
             <EditListingModal
@@ -141,6 +175,8 @@ function ListingView() {
                             <Icon name={ thisFavorite ? "heart outline" : "heart" }/>
                             { thisFavorite ? "Remove from Favorites" : "Add to Favorites" }
                         </Button> }
+                        <br /><br />
+                        { currentUser && !isMine && sendMessageForm }
                         { isMine && <Button
                             primary
                             icon
