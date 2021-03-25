@@ -39,7 +39,7 @@ function ChatsPage() {
                     stretched width={ 12 }
                     style={ { backgroundColor: "white", marginTop: "15px" } }
                 >
-                    { selectedChat.messages && <ChatPanel chat={ selectedChat } /> }
+                    { selectedChat.messages && <ChatPanel chat={ selectedChat } setChat={ setSelectedChat } /> }
                 </Grid.Column>
             </Grid>
         </Container>

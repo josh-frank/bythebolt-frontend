@@ -3,20 +3,8 @@ import { useSelector } from "react-redux";
 import { Divider, Form, Image, Input, Message } from "semantic-ui-react";
 import consumer from "../cable";
 
-function ChatPanel( { chat } ) {
-
-    useEffect( () => {
-        const subscription = consumer.subscriptions.create( {
-            channel: "ChatChannel",
-            chat_id: chat.id
-        }, {
-            received: updatedChatData => {
-                console.log('updatedChatData: ', updatedChatData);
-                chat.messages.push( updatedChatData );
-            }
-        } );
-        return () => subscription.unsubscribe();
-    }, [ chat ] );
+function ChatPanel( { chat, setChat } ) {
+    console.log('chat: ', chat);
 
     const currentUser = useSelector( state => state.currentUser );
 
@@ -24,16 +12,33 @@ function ChatPanel( { chat } ) {
 
     function isFromMe( message ) { return message.message_user.username === currentUser.username; }
 
+    useEffect( () => {
+        consumer.subscriptions.create( {
+            channel: "ChatChannel",
+            chat_id: chat.id
+        }, {
+            received: messageData => {
+                const updatedChat = { ...chat };
+                updatedChat.messages.push( messageData );
+                setChat( updatedChat );
+            }
+        } );
+    }, [ chat, setChat ] );
+
     function sendMessage() {
-        fetch( `${ process.env.REACT_APP_API_URL }/messages`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify( {
-                content: newMessage,
-                chat_id: chat.id,
-                user_id: currentUser.id
+        const token = localStorage.getItem( "token" );
+        if ( token ) {
+            fetch( `${ process.env.REACT_APP_API_URL }/messages`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json", Authorization: `Bearer ${ token }` },
+                body: JSON.stringify( {
+                    content: newMessage,
+                    chat_id: chat.id,
+                    user_id: currentUser.id
+                } )
             } )
-        } ).then( response => response.json() ).then( () => setNewMessage( "" ) );
+            setNewMessage( "" );
+        }
     }
 
     const chatMessages = chat.messages.map( message => {

@@ -58,6 +58,11 @@ function UserControlPanel() {
                                 text='My favorites'
                                 onClick={ () => history.push( "/my_favorites" ) }
                             />
+                            <Dropdown.Item
+                                icon="chat"
+                                text='My chats'
+                                onClick={ () => history.push( "/chats" ) }
+                            />
                             <Dropdown.Divider />
                             <Dropdown.Item
                                 icon="setting"
