@@ -12,7 +12,8 @@ function ChatPanel( { chat, setChat } ) {
     function isFromMe( message ) { return message.message_user.username === currentUser.username; }
 
     useEffect( () => {
-        consumer.subscriptions.create( {
+        console.log( "subscribed" );
+        const subscription = consumer.subscriptions.create( {
             channel: "ChatChannel",
             chat_id: chat.id
         }, {
@@ -22,6 +23,10 @@ function ChatPanel( { chat, setChat } ) {
                 setChat( updatedChat );
             }
         } );
+        return () => {
+            console.log( "unsubscribed" );
+            subscription.unsubscribe();
+        }
     }, [ chat, setChat ] );
 
     function sendMessage() {
@@ -35,8 +40,7 @@ function ChatPanel( { chat, setChat } ) {
                     chat_id: chat.id,
                     user_id: currentUser.id
                 } )
-            } )
-            setNewMessage( "" );
+            } ).then( () => {} ).then( () => setNewMessage( "" ) );
         }
     }
 

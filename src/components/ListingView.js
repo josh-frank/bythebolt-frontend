@@ -64,16 +64,28 @@ function ListingView() {
     function sendMessage() {
         const chatToContinue = currentUser.chats.find( chat => chat.listing_id === thisListing.id );
         if ( chatToContinue ) {
-            console.log( "This chat already exists" );
+            // console.log( "This chat already exists" );
+            fetch( `${ process.env.REACT_APP_API_URL }/messages`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json", Authorization: `Bearer ${ token }` },
+                body: JSON.stringify( {
+                    content: startChatFormState,
+                    chat_id: chatToContinue.id,
+                    user_id: currentUser.id
+                } )
+            } ).then( response => response.json() ).then( messageData => {
+                // dispatch( setCurrentUser( messageData.current_user ) );
+                history.push( `/chats/${ chatToContinue.id }` ); 
+            } );
         } else {
-            console.log( "No chat exists yet" );
+            // console.log( "No chat exists yet" );
             fetch( `${ process.env.REACT_APP_API_URL }/chats`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json", Authorization: `Bearer ${ token }` },
                 body: JSON.stringify( { listing_id: thisListing.id, message_content: startChatFormState } )
             } ).then( response => response.json() ).then( newChatData => {
-                dispatch( setCurrentUser( newChatData.current_user ) );
-                history.push( `/chats/${ newChatData.new_chat.id }` )
+                // dispatch( setCurrentUser( newChatData.current_user ) );
+                history.push( `/chats/${ newChatData.new_chat.id }` );
             } );
         }
     }
