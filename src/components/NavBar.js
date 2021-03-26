@@ -1,16 +1,27 @@
 // import { useHistory } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Input, Menu } from "semantic-ui-react";
 import LoginDropdown from "./LoginDropdown";
 import SignupModal from "./SignupModal";
 import UserControlPanel from "./UserControlPanel";
 import { Link } from "react-router-dom";
+import { setSearchQuery } from '../redux/searchQuerySlice';
 
 function NavBar() {
 
     // const history = useHistory();
+
+    const dispatch = useDispatch();
+
     const currentUser = useSelector( state => state.currentUser );
+
+    const searchQuery = useSelector( state => state.searchQuery );
+
     const displaySignupModal = useSelector( state => state.displaySignupModal );
+
+    function updateSearchQuery( searchQueryChangeEvent ) {
+        dispatch( setSearchQuery( searchQueryChangeEvent.target.value ) );
+    }
 
     return (
         <>
@@ -27,6 +38,8 @@ function NavBar() {
                         size="big"
                         action={ { icon: 'search' } }
                         placeholder='Search listings'
+                        value={ searchQuery }
+                        onChange={ updateSearchQuery }
                     />
                 </Menu.Item>
                 <Menu.Item position="right">
