@@ -14,6 +14,7 @@ import CreateListingPage from './CreateListingPage';
 import ListingView from './ListingView';
 import ChatsPage from './ChatsPage';
 import { fetchProfile, fetchCategories } from '../utilities/fetchData';
+import SearchResultsPage from './SearchResultsPage';
 
 function App() {
 
@@ -46,6 +47,9 @@ function App() {
           </Route>
           <Route exact path="/listing/:listingId">
             <ListingView />
+          </Route>
+          <Route exact path="/search/:searchQuery">
+            <SearchResultsPage />
           </Route>
           <Route exact path="/my_profile">
             <ProfilePage activeItem="profile" />
