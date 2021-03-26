@@ -3,6 +3,7 @@ import { MapContainer, TileLayer } from "react-leaflet";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setCurrentUser } from "../redux/currentUserSlice";
+import { postUserLocation } from "../utilities/fetchData";
 
 const defaultLocation = { lat: 40.76547518458087, lng: -73.98536808381324 };
 
@@ -18,13 +19,7 @@ function LocationModal( { displayModal, toggleDisplayModal } ) {
     
     function updateLocation() {
         const token = localStorage.getItem( "token" );
-        fetch( `${process.env.REACT_APP_API_URL}/profile`, {
-            method: "PATCH",
-            headers: { "Content-Type": "application/json", "Authorization": `Bearer ${ token }` },
-            body: JSON.stringify( { location: [ newLocation.lat, newLocation.lng ] } )
-        } )
-            .then( response => response.json() )
-            .then( userData => dispatch( setCurrentUser( userData ) ) );
+        postUserLocation( token, newLocation.lat, newLocation.lng ).then( userData => dispatch( setCurrentUser( userData ) ) );
     }
 
     function GetPosition( { map } ) {
@@ -34,8 +29,8 @@ function LocationModal( { displayModal, toggleDisplayModal } ) {
         }, [ map ] );
     
         useEffect( () => {
-            map.on( 'move', onMove );
-            return () => { map.off( 'move', onMove ); }
+            map.on( "move", onMove );
+            return () => { map.off( "move", onMove ); }
         }, [ map, onMove ] );
     
         return null;

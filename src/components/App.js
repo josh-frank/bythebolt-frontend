@@ -12,8 +12,8 @@ import ListingsPage from './ListingsPage';
 import Footer from './Footer';
 import CreateListingPage from './CreateListingPage';
 import ListingView from './ListingView';
-import { fetchProfile, fetchCategories } from '../utilities/fetchData';
 import ChatsPage from './ChatsPage';
+import { fetchProfile, fetchCategories } from '../utilities/fetchData';
 
 function App() {
 

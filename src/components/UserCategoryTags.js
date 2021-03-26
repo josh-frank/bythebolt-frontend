@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { Label, Popup } from "semantic-ui-react";
 import { setCurrentUser } from "../redux/currentUserSlice";
+import { deleteUserCategory } from '../utilities/fetchData';
 
 function UserCategoryTags() {
 
@@ -10,12 +11,7 @@ function UserCategoryTags() {
 
     function deleteCategory( userCategoryId ) {
         const token = localStorage.getItem( "token" );
-        fetch( `${process.env.REACT_APP_API_URL}/user_categories/${ userCategoryId }`, {
-            method: "DELETE",
-            headers: { "Authorization": `Bearer ${ token }` },
-        } ).then( response => response.json() ).then( userData => {
-            dispatch( setCurrentUser( userData ) );
-        } );
+        deleteUserCategory( token, userCategoryId ).then( userData => dispatch( setCurrentUser( userData ) ) );
     }
 
     return (

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Dropdown } from "semantic-ui-react";
 import { setCurrentUser } from "../redux/currentUserSlice";
+import { postUserCategory } from '../utilities/fetchData';
 
 function AddUserCategoryDropdown() {
 
@@ -21,12 +22,7 @@ function AddUserCategoryDropdown() {
     const [ selectedCategory, setSelectedCategory ] = useState( null );
 
     function addUserCategory() {
-        const token = localStorage.getItem( "token" );
-        fetch( `${process.env.REACT_APP_API_URL}/user_categories`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json", "Authorization": `Bearer ${ token }` },
-            body: JSON.stringify( { user_id: currentUser.id, category_id: selectedCategory } )
-        } ).then( response => response.json() ).then( userData => {
+        postUserCategory( localStorage.getItem( "token" ), currentUser.id, selectedCategory ).then( userData => {
             dispatch( setCurrentUser( userData ) );
             setSelectedCategory( null );
         } );

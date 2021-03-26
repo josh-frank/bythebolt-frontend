@@ -4,6 +4,7 @@ import { useHistory } from "react-router";
 import { Button, Confirm, Header, Icon, Item } from "semantic-ui-react";
 import { setAllListings } from "../redux/allListingsSlice";
 import { setCurrentUser } from "../redux/currentUserSlice";
+import { deleteListing } from "../utilities/fetchData";
 
 function MyListingsPanel() {
 
@@ -28,18 +29,13 @@ function MyListingsPanel() {
         toggleShowDeleteModal( false );
     }
 
-    function deleteListing() {
+    function deleteThisListing() {
         const token = localStorage.getItem( "token" );
-        if ( token ) {
-            fetch( `${ process.env.REACT_APP_API_URL }/listings/${ listingToDelete.id }`, {
-                method: "DELETE",
-                headers: { Authorization: `Bearer ${ token }` }
-            } ).then( response => response.json() ).then( userData => {
-                dispatch( setCurrentUser( userData ) );
-                dispatch( setAllListings( allListings.filter( listing => listing.id !== listingToDelete.id ) ) );
-                toggleShowDeleteModal( false );
-            } );
-        }
+        deleteListing( token, listingToDelete.id ).then( userData => {
+            dispatch( setCurrentUser( userData ) );
+            dispatch( setAllListings( allListings.filter( listing => listing.id !== listingToDelete.id ) ) );
+            toggleShowDeleteModal( false );
+        } );
     }
     
     const userListingCards = currentUser.listings.map( listing => {
@@ -83,7 +79,7 @@ function MyListingsPanel() {
                 header={ `Are you sure you want to delete this listing: ${ listingToDelete.title }?` }
                 content={ <Header size="small">This cannot be undone!</Header> }
                 confirmButton="Delete Listing"
-                onConfirm={ deleteListing }
+                onConfirm={ deleteThisListing }
                 onCancel={ cancelDeleteListing }
             /> }
             <Item.Group>

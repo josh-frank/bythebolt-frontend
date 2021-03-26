@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import { Button, Confirm, Icon, Item } from "semantic-ui-react";
 import { setCurrentUser } from "../redux/currentUserSlice";
+import { unfavorite } from "../utilities/fetchData";
 
 function MyFavoritesPanel() {
 
@@ -27,15 +28,10 @@ function MyFavoritesPanel() {
 
     function deleteFavorite() {
         const token = localStorage.getItem( "token" );
-        if ( token ) {
-            fetch( `${ process.env.REACT_APP_API_URL }/favorites/${ favoriteToDelete.id }`, {
-                method: "DELETE",
-                headers: { Authorization: `Bearer ${ token }` }
-            } ).then( response => response.json() ).then( userData => {
-                dispatch( setCurrentUser( userData ) );
-                toggleShowDeleteModal( false );
-            } );
-        }
+        unfavorite( token, favoriteToDelete.id ).then( userData => {
+            dispatch( setCurrentUser( userData ) );
+            toggleShowDeleteModal( false );
+        } );
     }
 
     const userFavoriteCards = currentUser.favorite_listings.map( favoriteListing => {

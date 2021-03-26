@@ -7,6 +7,7 @@ import { Button, Card, Container, Form, Header, Icon, Image, Input, Label, Segme
 import { distanceBetween } from "../utilities/distanceBetween";
 import { setCurrentUser } from '../redux/currentUserSlice';
 import EditListingModal from './EditListingModal';
+import { favorite, unfavorite } from '../utilities/fetchData';
 
 function ListingView() {
 
@@ -43,22 +44,11 @@ function ListingView() {
     const token = localStorage.getItem( "token" );
 
     function addToFavorites() {
-        fetch( `${ process.env.REACT_APP_API_URL }/favorites`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json", Authorization: `Bearer ${ token }` },
-            body: JSON.stringify( { listing_id: thisListing.id } )
-        } ).then( response => response.json() ).then( userData => {
-            dispatch( setCurrentUser( userData ) );
-        } );
+        favorite( token, thisListing.id ).then( userData => dispatch( setCurrentUser( userData ) ) );
     }
 
     function removeFromFavorites() {
-        fetch( `${ process.env.REACT_APP_API_URL }/favorites/${ thisFavorite.id }`, {
-            method: "DELETE",
-            headers: { Authorization: `Bearer ${ token }` }
-        } ).then( response => response.json() ).then( userData => {
-            dispatch( setCurrentUser( userData ) );
-        } );
+        unfavorite( token, thisFavorite.id ).then( userData => dispatch( setCurrentUser( userData ) ) );
     }
 
     function sendMessage() {
