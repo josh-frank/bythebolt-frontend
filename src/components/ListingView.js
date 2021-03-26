@@ -73,10 +73,7 @@ function ListingView() {
                     chat_id: chatToContinue.id,
                     user_id: currentUser.id
                 } )
-            } ).then( response => response.json() ).then( messageData => {
-                // dispatch( setCurrentUser( messageData.current_user ) );
-                history.push( `/chats/${ chatToContinue.id }` ); 
-            } );
+            } ).then( () => history.push( `/chats/${ chatToContinue.id }` ) ); 
         } else {
             // console.log( "No chat exists yet" );
             fetch( `${ process.env.REACT_APP_API_URL }/chats`, {
@@ -84,7 +81,7 @@ function ListingView() {
                 headers: { "Content-Type": "application/json", Authorization: `Bearer ${ token }` },
                 body: JSON.stringify( { listing_id: thisListing.id, message_content: startChatFormState } )
             } ).then( response => response.json() ).then( newChatData => {
-                // dispatch( setCurrentUser( newChatData.current_user ) );
+                dispatch( setCurrentUser( newChatData.current_user ) );
                 history.push( `/chats/${ newChatData.new_chat.id }` );
             } );
         }
