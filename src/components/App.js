@@ -26,8 +26,7 @@ function App() {
       fetchProfile( token ).then( userData => dispatch( setCurrentUser( userData ) ) );
     }
     fetchCategories().then( categoryData => dispatch( setAllCategories( categoryData ) ) );
-    fetch( `${ process.env.REACT_APP_API_URL }/listings` ).then( response => response.json() )
-        .then( listingData => dispatch( setAllListings( listingData ) ) );
+    fetch( `${ process.env.REACT_APP_API_URL }/listings` ).then( response => response.json() ).then( listingData => dispatch( setAllListings( listingData ) ) );
   }, [ dispatch ] );
 
   return (

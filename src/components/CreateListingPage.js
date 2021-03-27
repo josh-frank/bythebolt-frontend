@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { Button, Container, Divider, Dropdown, Form, Grid, Header, Image, Input, Label, Message, Popup, Segment, TextArea } from "semantic-ui-react";
+import { Button, Container, Dimmer, Divider, Dropdown, Form, Grid, Header, Image, Input, Label, Loader, Message, Popup, Segment, TextArea } from "semantic-ui-react";
 import Dropzone from 'react-dropzone'
 import { setAllListings } from "../redux/allListingsSlice";
 import { setCurrentUser } from "../redux/currentUserSlice";
@@ -17,6 +17,8 @@ function CreateListingPage() {
     const [ newListingFormState, setNewListingFormState ] = useState( {} );
 
     const [ newListingErrors, setNewListingErrors ] = useState( [] );
+
+    const [ showLoadingDimmer, toggleShowLoadingDimmer ] = useState( false );
 
     const allCategories = useSelector( state => state.allCategories );
 
@@ -58,6 +60,7 @@ function CreateListingPage() {
     }
 
     function createListing() {
+        toggleShowLoadingDimmer( true );
         const token = localStorage.getItem( "token" ), formData = new FormData();
         formData.append( "title", newListingFormState.title );
         formData.append( "description", newListingFormState.description );
@@ -84,7 +87,10 @@ function CreateListingPage() {
                 dispatch( setAllListings( [ ...allListings, newListingData ] ) );
                 fetchProfile( token ).then( userData => dispatch( setCurrentUser( userData ) ) );
                 history.push( `listing/${ newListingData.id }` );
-            } ).catch( errorData => setNewListingErrors( errorData.errors ) );
+            } ).catch( errorData => {
+                toggleShowLoadingDimmer( false );
+                setNewListingErrors( errorData.errors )
+            } );
         }
     }
 
@@ -110,6 +116,12 @@ function CreateListingPage() {
 
     return (
         <Container style={ { marginTop: "10px" } }>
+            <Dimmer
+                inverted
+                active={ showLoadingDimmer }
+            >
+                <Loader inverted>Creating listing – please wait...</Loader>
+            </Dimmer>
             <Header size="huge">Create new listing</Header>
             { newListingErrors && !!newListingErrors.length && <Message
                 error

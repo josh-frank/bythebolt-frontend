@@ -39,7 +39,7 @@ function ChatPanel( { chat, setChat } ) {
                 user_id: currentUser.id
             } )
         } ).then( response => response.json() ).then( updatedUser => {
-            dispatch( setCurrentUser( updatedUser ) );
+            // dispatch( setCurrentUser( updatedUser ) );
             setNewMessage( "" );
         } );
     }

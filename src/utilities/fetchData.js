@@ -1,3 +1,8 @@
+function fetchSearchResults( query, page, limit ) {
+    return fetch( `${ process.env.REACT_APP_API_URL }/search?query=${ query }&page=${ page }&per_page=${ limit }` )
+        .then( response => response.json() );
+}
+
 function fetchProfile( token ) {
     return fetch( `${ process.env.REACT_APP_API_URL }/profile`, {
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${ token }` }
@@ -59,6 +64,7 @@ function unfavorite( token, favoriteId ) {
 }
 
 export {
+    fetchSearchResults,
     fetchProfile,
     fetchAddress,
     postUserLocation,

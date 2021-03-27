@@ -33,7 +33,7 @@ function ListingCard( { listing } ) {
                 label={ !daysSinceCreated ? newLabel : null }
             /> }
             <Card.Content>
-                <Card.Header as="a" onClick={ () => history.push( `listing/${ listing.id }` ) }>
+                <Card.Header as="a" onClick={ () => history.push( `/listing/${ listing.id }` ) }>
                     { listing.title }
                 </Card.Header>
                 <Card.Meta>

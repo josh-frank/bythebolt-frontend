@@ -18,6 +18,7 @@ function ProfilePage( { activeItem } ) {
     const currentUser = useSelector( state => state.currentUser );
 
     const [ activeMenuItem, setActiveMenuItem ] = useState( activeItem );
+    
     const [ displayAvatarModal, toggleDisplayAvatarModal ] = useState( false );
 
     return ( currentUser &&
@@ -53,7 +54,7 @@ function ProfilePage( { activeItem } ) {
                     </Segment>
                 </Segment.Group>
                 <Grid>
-                    <Grid.Column width={4}>
+                    <Grid.Column width={ 4 }>
                         <Menu fluid vertical tabular>
                             <Menu.Item
                                 name="My profile"
@@ -82,7 +83,7 @@ function ProfilePage( { activeItem } ) {
                             />
                         </Menu>
                     </Grid.Column>
-                    <Grid.Column stretched width={12}>
+                    <Grid.Column stretched width={ 12 }>
                         <Segment>
                             { activeMenuItem === "profile" && <ProfilePanel /> }
                             { activeMenuItem === "listings" && <MyListingsPanel /> }
