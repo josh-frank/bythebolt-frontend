@@ -3,6 +3,7 @@ import { useParams } from "react-router";
 import { Card, Container, Divider, Dropdown, Grid, Header, Menu, Pagination, Sticky } from "semantic-ui-react";
 import ListingCard from "./ListingCard";
 import { fetchSearchResults } from '../utilities/fetchData';
+import { useSelector } from "react-redux";
 
 function SearchResultsPage() {
 
@@ -14,11 +15,18 @@ function SearchResultsPage() {
     const [ searchPage, setSearchPage ] = useState( 1 );
     const [ searchLimit, setSearchLimit ] = useState( 12 );
     const [ searchMetadata, setSearchMetadata ] = useState( null );
+    const [ searchCategoryData, setSearchCategoryData ] = useState( null );
+    
+    const allCategories = useSelector( state => state.allCategories );
+
+    const [ selectedCategory, setSelectedCategory ] = useState( "" );
+    console.log('selectedCategory: ', selectedCategory);
 
     useEffect( () => {
         fetchSearchResults( searchQuery.toLowerCase(), searchPage, searchLimit ).then( searchResultData => {
             setSearchResults( searchResultData.listings );
             setSearchMetadata( searchResultData.metadata );
+            setSearchCategoryData( searchResultData.categories );
         } );
     }, [ searchQuery, searchPage, searchLimit ] );
 
@@ -57,6 +65,17 @@ function SearchResultsPage() {
                 active={ null }
                 onClick={ null }
             /> */}
+            <Menu.Item header>Categories</Menu.Item>
+            { searchCategoryData && Object.keys( searchCategoryData ).map( categoryName => {
+                return <Menu.Item
+                    key={ categoryName }
+                    name={ categoryName }
+                    active={ selectedCategory === categoryName }
+                    onClick={ ( changeEvent, { name } ) => setSelectedCategory( name ) }
+                >
+                    { categoryName } ({ searchCategoryData[ categoryName ] })
+                </Menu.Item>
+            } ) }
         </Menu>
     );
 
