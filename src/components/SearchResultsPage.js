@@ -1,9 +1,9 @@
 import { createRef, useEffect, useState } from "react";
 import { useParams } from "react-router";
-import { Card, Container, Divider, Dropdown, Grid, Header, Menu, Pagination, Sticky } from "semantic-ui-react";
+import { Card, Container, Divider, Dropdown, Grid, Header, Label, Menu, Pagination, Sticky } from "semantic-ui-react";
 import ListingCard from "./ListingCard";
 import { fetchSearchResults } from '../utilities/fetchData';
-import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
 function SearchResultsPage() {
 
@@ -12,28 +12,29 @@ function SearchResultsPage() {
     const contextRef = createRef();
 
     const [ searchResults, setSearchResults ] = useState( [] );
+
     const [ searchPage, setSearchPage ] = useState( 1 );
+
     const [ searchLimit, setSearchLimit ] = useState( 12 );
+
     const [ searchMetadata, setSearchMetadata ] = useState( null );
+
     const [ searchCategoryData, setSearchCategoryData ] = useState( null );
-    
-    const allCategories = useSelector( state => state.allCategories );
 
     const [ selectedCategory, setSelectedCategory ] = useState( "" );
-    console.log('selectedCategory: ', selectedCategory);
 
     useEffect( () => {
-        fetchSearchResults( searchQuery.toLowerCase(), searchPage, searchLimit ).then( searchResultData => {
+        fetchSearchResults( searchQuery.toLowerCase(), selectedCategory, searchPage, searchLimit ).then( searchResultData => {
             setSearchResults( searchResultData.listings );
             setSearchMetadata( searchResultData.metadata );
             setSearchCategoryData( searchResultData.categories );
         } );
-    }, [ searchQuery, searchPage, searchLimit ] );
+    }, [ searchQuery, selectedCategory, searchPage, searchLimit ] );
 
     const cardList = searchResults.map( listing => <ListingCard key={ listing.id } listing={ listing } /> );
 
     const filterMenu = (
-        <Menu text vertical>
+        <Menu vertical>
             <Menu.Item header>
                 Display
                 &nbsp;
@@ -65,7 +66,11 @@ function SearchResultsPage() {
                 active={ null }
                 onClick={ null }
             /> */}
-            <Menu.Item header>Categories</Menu.Item>
+            <Menu.Item header>
+                Categories
+                &nbsp;
+                (<Link onClick={ () => setSelectedCategory( "" ) }>Clear</Link>)
+            </Menu.Item>
             { searchCategoryData && Object.keys( searchCategoryData ).map( categoryName => {
                 return <Menu.Item
                     key={ categoryName }
@@ -83,12 +88,18 @@ function SearchResultsPage() {
         <div ref={ contextRef }>
             <Container style={ { marginTop: "10px" } }>
                 <Grid>
-                    <Grid.Column width={ 2 }>
-                        <Sticky context={ contextRef }>{ filterMenu }</Sticky>
+                    <Grid.Column width={ 3 }>
+                        <Sticky context={ contextRef } offset={ 10 }>{ filterMenu }</Sticky>
                     </Grid.Column>
-                    <Grid.Column stretched width={ 14 }>
+                    <Grid.Column stretched width={ 13 }>
                         <Container className="center aligned">
-                            <Header size="huge">{ searchMetadata.total_count } results for "{ searchQuery }"</Header>
+                            <Header size="huge">
+                                { searchMetadata.total_count } results for "{ searchQuery }"
+                                &nbsp;
+                                { !!selectedCategory.length &&
+                                    <Label tag size="large" color="blue">{ selectedCategory }
+                                </Label> }
+                            </Header>
                             <Card.Group centered>
                                 { cardList }
                             </Card.Group>

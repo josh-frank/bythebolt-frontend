@@ -1,5 +1,5 @@
-function fetchSearchResults( query, page, limit ) {
-    return fetch( `${ process.env.REACT_APP_API_URL }/search?query=${ query }&page=${ page }&per_page=${ limit }` )
+function fetchSearchResults( query, category, page, limit ) {
+    return fetch( `${ process.env.REACT_APP_API_URL }/search?query=${ query }&category=${ category }&page=${ page }&per_page=${ limit }` )
         .then( response => response.json() );
 }
 
