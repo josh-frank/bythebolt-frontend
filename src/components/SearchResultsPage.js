@@ -4,12 +4,15 @@ import { Card, Container, Divider, Dropdown, Grid, Header, Label, Menu, Paginati
 import ListingCard from "./ListingCard";
 import { fetchSearchResults } from '../utilities/fetchData';
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 function SearchResultsPage() {
 
     const { searchQuery } = useParams();
 
     const contextRef = createRef();
+
+    const currentUser = useSelector( state => state.currentUser );
 
     const [ searchResults, setSearchResults ] = useState( [] );
 
@@ -23,15 +26,16 @@ function SearchResultsPage() {
 
     const [ selectedCategory, setSelectedCategory ] = useState( "" );
 
-    useEffect( () => {
-        fetchSearchResults( searchQuery.toLowerCase(), selectedCategory, searchPage, searchLimit ).then( searchResultData => {
-            setSearchResults( searchResultData.listings );
-            setSearchMetadata( searchResultData.metadata );
-            setSearchCategoryData( searchResultData.categories );
-        } );
-    }, [ searchQuery, selectedCategory, searchPage, searchLimit ] );
+    const [ searchSort, setSearchSort ] = useState( "" );
 
-    const cardList = searchResults.map( listing => <ListingCard key={ listing.id } listing={ listing } /> );
+    useEffect( () => {
+        fetchSearchResults( searchQuery.toLowerCase(), selectedCategory, searchSort, currentUser ? currentUser.location : "", searchPage, searchLimit )
+            .then( searchResultData => {
+                setSearchResults( searchResultData.listings );
+                setSearchMetadata( searchResultData.metadata );
+                setSearchCategoryData( searchResultData.categories );
+            } );
+    }, [ searchQuery, selectedCategory, searchSort, currentUser, searchPage, searchLimit ] );
 
     const filterMenu = (
         <Menu vertical>
@@ -50,26 +54,30 @@ function SearchResultsPage() {
                     onChange={ ( changeEvent, { value } ) => setSearchLimit( value ) }
                 />
             </Menu.Item>
-            {/* <Menu.Item header>Sort By</Menu.Item>
-            <Menu.Item
-                name="closest"
-                active={ null }
-                onClick={ null }
-            />
-            <Menu.Item
-                name="mostComments"
-                active={ null }
-                onClick={ null }
-            />
-            <Menu.Item
-                name="mostPopular"
-                active={ null }
-                onClick={ null }
-            /> */}
+            <Menu.Item header>Sort By</Menu.Item>
+            <Menu.Item>
+                <Dropdown
+                    compact
+                    selection
+                    options={ currentUser ? [
+                        { key: 1, text: "Newest first", value: "newest" },
+                        { key: 2, text: "Nearest first", value: "nearest" },
+                        { key: 3, text: "Lowest price first", value: "price-asc" },
+                        { key: 4, text: "Highest price first", value: "price-desc" }
+                    ] : [
+                        { key: 1, text: "Newest first", value: "newest" },
+                        { key: 2, text: "Lowest price first", value: "price-asc" },
+                        { key: 3, text: "Highest price first", value: "price-desc" }
+                    ] }
+                    placeholder="Select filter"
+                    defaultValue={ searchSort.length ? searchSort : null }
+                    onChange={ ( changeEvent, { value } ) => setSearchSort( value ) }
+                />
+            </Menu.Item>
             <Menu.Item header>
                 Categories
                 &nbsp;
-                (<Link onClick={ () => setSelectedCategory( "" ) }>Clear</Link>)
+                (<Link to="#" onClick={ () => setSelectedCategory( "" ) }>Clear</Link>)
             </Menu.Item>
             { searchCategoryData && Object.keys( searchCategoryData ).map( categoryName => {
                 return <Menu.Item
@@ -83,6 +91,8 @@ function SearchResultsPage() {
             } ) }
         </Menu>
     );
+
+    const cardList = searchResults.map( listing => <ListingCard key={ listing.id } listing={ listing } /> );
 
     return ( searchMetadata &&
         <div ref={ contextRef }>
