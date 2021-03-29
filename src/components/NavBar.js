@@ -28,7 +28,7 @@ function NavBar() {
                 <Menu.Item>
                     <Form
                         style={ { width: "40vw" } }
-                        onSubmit={ () => history.push( `/search/${ searchQuery }` ) }
+                        onSubmit={ () => history.push( `/search/all/${ encodeURI( searchQuery ) }/` ) }
                     >
                         <Form.Field>
                             <Input

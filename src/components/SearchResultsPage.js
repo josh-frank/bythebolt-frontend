@@ -8,7 +8,7 @@ import { useSelector } from "react-redux";
 
 function SearchResultsPage() {
 
-    const { searchQuery } = useParams();
+    const { searchCategory, searchQuery } = useParams();
 
     const contextRef = createRef();
 
@@ -24,7 +24,7 @@ function SearchResultsPage() {
 
     const [ searchCategoryData, setSearchCategoryData ] = useState( null );
 
-    const [ selectedCategory, setSelectedCategory ] = useState( "" );
+    const [ selectedCategory, setSelectedCategory ] = useState( searchCategory === "all" ? "" : decodeURIComponent( searchCategory ) );
 
     const [ searchSort, setSearchSort ] = useState( "" );
 
@@ -104,7 +104,7 @@ function SearchResultsPage() {
                     <Grid.Column stretched width={ 13 }>
                         <Container className="center aligned">
                             <Header size="huge">
-                                { searchMetadata.total_count } results for "{ searchQuery }"
+                                { searchMetadata.total_count } results { searchQuery.replace( /\s/g, "" ).length ? `for "${ searchQuery }"` : null }
                                 &nbsp;
                                 { !!selectedCategory.length &&
                                     <Label tag size="large" color="blue">{ selectedCategory }

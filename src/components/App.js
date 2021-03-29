@@ -47,7 +47,7 @@ function App() {
           <Route exact path="/listing/:listingId">
             <ListingView />
           </Route>
-          <Route exact path="/search/:searchQuery">
+          <Route exact path="/search/:searchCategory/:searchQuery">
             <SearchResultsPage />
           </Route>
           <Route exact path="/my_profile">
