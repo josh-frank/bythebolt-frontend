@@ -9,9 +9,8 @@ function CategoryMenu() {
     const allCategories = useSelector( state => state.allCategories );
 
     const categoryNavLinks = allCategories && allCategories.map( category => {
-        return <Menu.Item>
+        return <Menu.Item key={ category.id }>
             <Link
-                key={ category.id }
                 to="#"
                 onClick={ () => {
                     history.push( `/search/${ encodeURIComponent( category.name ) }/%20/` );
