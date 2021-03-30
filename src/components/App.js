@@ -1,20 +1,20 @@
 import '../App.css';
 import { useEffect } from 'react';
-import { Route, /*NavLink,*/ Switch } from "react-router-dom";
-import { useDispatch, useSelector } from 'react-redux';
+import { Route, Switch } from "react-router-dom";
+import { useDispatch } from 'react-redux';
 import { setCurrentUser } from '../redux/currentUserSlice';
 import { setAllCategories } from '../redux/allCategoriesSlice';
 import { setAllListings } from '../redux/allListingsSlice';
 import NavBar from './NavBar';
 import CategoryMenu from './CategoryMenu';
 import ProfilePage from './ProfilePage';
-import ListingsPage from './ListingsPage';
 import Footer from './Footer';
 import CreateListingPage from './CreateListingPage';
 import ListingView from './ListingView';
 import ChatsPage from './ChatsPage';
 import { fetchProfile, fetchCategories } from '../utilities/fetchData';
 import SearchResultsPage from './SearchResultsPage';
+import HomePage from './HomePage';
 
 function App() {
 
@@ -36,7 +36,7 @@ function App() {
       <section className="app-content">
         <Switch>
           <Route exact path="/">
-            { useSelector( state => state.allListings ) && <ListingsPage /> }
+            <HomePage />
           </Route>
           <Route exact path="/chats">
             <ChatsPage />
