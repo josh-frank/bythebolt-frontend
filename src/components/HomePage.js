@@ -1,6 +1,6 @@
-import { ButtonBack, ButtonNext, CarouselProvider, Slide, Slider } from "pure-react-carousel";
+import { /* ButtonBack, ButtonNext, */ CarouselProvider, Slide, Slider } from "pure-react-carousel";
 import { useEffect, useState } from "react";
-import { Container, Header, Icon, Image } from "semantic-ui-react";
+import { Container, Header, /* Icon, */ Image } from "semantic-ui-react";
 import ListingCard from "./ListingCard";
 
 function HomePage() {
@@ -17,6 +17,7 @@ function HomePage() {
             naturalSlideWidth={ 965 }
             naturalSlideHeight={ 270 }
             infinite={ true }
+            isPlaying={ true }
             totalSlides={ 6 }
         >
             <Slider>
@@ -111,7 +112,7 @@ function HomePage() {
                     <Image fluid src="/slides/slide6.jpg" />
                 </Slide>
             </Slider>
-            <ButtonBack
+            {/* <ButtonBack
                 className="ui small blue button"
                 style={ { position: "absolute", left: "10%", top: "50%" } }
             >
@@ -122,7 +123,7 @@ function HomePage() {
                 style={ { position: "absolute", right: "10%", top: "50%" } }
             >
                 <Icon name="forward" />
-            </ButtonNext>
+            </ButtonNext> */}
         </CarouselProvider>
     );
 
@@ -141,10 +142,10 @@ function HomePage() {
             { headerCarousel }
             <Header size="huge">New listings</Header>
             <CarouselProvider
-                naturalSlideWidth={ 6 }
-                naturalSlideHeight={ 10 }
+                naturalSlideWidth={ 2 }
+                naturalSlideHeight={ 4 }
                 totalSlides={ newListings.length }
-                visibleSlides={ 3 }
+                visibleSlides={ 4 }
                 isPlaying={ true }
             >
                 { newListingsSlides }
