@@ -63,6 +63,12 @@ function unfavorite( token, favoriteId ) {
     } ).then( response => response.json() );
 }
 
+function toggleAvailability( listingId ) {
+    return fetch( `${ process.env.REACT_APP_API_URL }/mark_sold/${ listingId }`, {
+        method: "PATCH"
+    } ).then( response => response.json() );
+}
+
 export {
     fetchSearchResults,
     fetchProfile,
@@ -73,5 +79,6 @@ export {
     deleteUserCategory,
     deleteListing,
     favorite,
-    unfavorite
+    unfavorite,
+    toggleAvailability
 };

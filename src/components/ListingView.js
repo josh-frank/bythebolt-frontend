@@ -7,7 +7,7 @@ import { Button, Card, Container, Form, Header, Icon, Image, Input, Label, Segme
 import { distanceBetween } from "../utilities/distanceBetween";
 import { setCurrentUser } from '../redux/currentUserSlice';
 import EditListingModal from './EditListingModal';
-import { favorite, unfavorite } from '../utilities/fetchData';
+import { favorite, toggleAvailability, unfavorite } from '../utilities/fetchData';
 
 function ListingView() {
 
@@ -49,6 +49,10 @@ function ListingView() {
 
     function removeFromFavorites() {
         unfavorite( token, thisFavorite.id ).then( userData => dispatch( setCurrentUser( userData ) ) );
+    }
+
+    function markSoldOrUnsold() {
+        toggleAvailability( thisListing.id ).then( setThisListing );
     }
 
     function sendMessage() {
@@ -96,23 +100,37 @@ function ListingView() {
         </Card>
     );
 
-    const listingImageCarousel = ( thisListing &&
-        thisListing.image_urls ?
-            <CarouselProvider
-                naturalSlideWidth={6}
-                naturalSlideHeight={4}
-                totalSlides={ thisListing.image_urls.length }
-            >
-                <Slider>
-                    { thisListing.image_urls.map( ( imageUrl, index ) => {
-                        return <Slide key={ index } index={ index }>
-                            <Image as={ CarouselImage } src={ imageUrl }/>
-                        </Slide>
-                    } ) }
-                </Slider>
-                <ButtonBack>Back</ButtonBack>
-                <ButtonNext>Next</ButtonNext>
-            </CarouselProvider>
+    const listingImageCarousel = ( thisListing && thisListing.image_urls ?
+        <CarouselProvider
+            naturalSlideWidth={6}
+            naturalSlideHeight={4}
+            totalSlides={ thisListing.image_urls.length }
+        >
+            { !thisListing.active &&
+                <div style={ {
+                    fontSize: "96pt",
+                    fontWeight: "bold",
+                    color: "white",
+                    opacity: "0.75",
+                    position: "absolute",
+                    left: "33%",
+                    top: "45%",
+                    transform: "rotate( 45deg )",
+                    zIndex: "1000"
+                } }>
+                    SOLD
+                </div>
+            }
+            <Slider>
+                { thisListing.image_urls.map( ( imageUrl, index ) => {
+                    return <Slide key={ index } index={ index }>
+                        <Image as={ CarouselImage } src={ imageUrl }/>
+                    </Slide>
+                } ) }
+            </Slider>
+            <ButtonBack>Back</ButtonBack>
+            <ButtonNext>Next</ButtonNext>
+        </CarouselProvider>
         : <em>No images</em>
     );
 
@@ -142,6 +160,9 @@ function ListingView() {
                 <Segment.Group>
                     <Segment>
                         <Header size="huge">{ thisListing.title }</Header>
+                        { !thisListing.active &&
+                            <Label size="big" color="red">No longer available</Label>
+                        }
                     </Segment>
                     <Segment secondary>
                         { thisListing.listing_categories.map( listingCategory => {
@@ -183,6 +204,16 @@ function ListingView() {
                         >
                             <Icon name="edit"/>
                             Edit listing
+                        </Button> }
+                        { isMine && <Button
+                            primary
+                            icon
+                            size="mini"
+                            labelPosition="left"
+                            onClick={ () => markSoldOrUnsold( thisListing.id ) }
+                        >
+                            <Icon name="ban"/>
+                            { thisListing.active ? "Mark as unavailable" : "Mark as available" }
                         </Button> }
                     </Segment>
                 </Segment.Group>
