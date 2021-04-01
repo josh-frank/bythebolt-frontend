@@ -2,7 +2,7 @@
   "name": "bythebolt-frontend",
   "version": "0.1.0",
   "private": true,
-  "homepage": ".",
+  "homepage": "https://buythebolt.netlify.app",
   "dependencies": {
     "@rails/actioncable": "^6.1.3",
     "@reduxjs/toolkit": "^1.5.0",
